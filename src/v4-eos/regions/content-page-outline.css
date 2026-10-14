@@ -1,0 +1,135 @@
+/* Content Pages outline (Explorer) — boxed navigation. Top-level items are white
+   containers separated by 1px. Subitems are plain rows indented 16px under their
+   group. Expandable groups show a right chevron that rotates when open; items
+   without sub-items show no chevron. Values match the
+   boxed StructureTreeRow `sectionEntry` styling (36px rows, 12/8px padding,
+   4px radius, 14/20 type, 3px blue selection accent).
+   Markup and ARIA follow the WAI-ARIA tree pattern:
+     root              .cp-tree-item                    li role="treeitem"
+     content           .cp-tree-item__content           the boxed container
+     label             .cp-tree-item__label
+     trailing          .cp-tree-item__trailing          right chevron (expandable groups only)
+     groupTransition   .cp-tree-item__group-transition  nested children
+   State is read from ARIA attributes (aria-selected / aria-expanded). Scoped to
+   the outline; the shared Structure tree is not affected. */
+
+.cp-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  list-style: none;
+}
+
+.cp-tree-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  list-style: none;
+  outline: none;
+}
+
+.cp-tree-item__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 36px;
+  margin: 0 var(--space-1);
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-radius: var(--radius-field);
+  background: var(--color-bg-elevated);
+  box-shadow: inset 0 0 0 1px var(--color-border-subtle);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--type-body-md-size);
+  font-weight: 400;
+  line-height: var(--type-body-md-lh);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.cp-tree-item__content:hover {
+  background: var(--color-bg-hover);
+  box-shadow: inset 0 0 0 1px var(--color-border-default);
+}
+
+.cp-tree-item__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--space-2) 0;
+  overflow-wrap: anywhere;
+  color: color-mix(in srgb, var(--color-text-primary) 90%, transparent);
+  font-weight: 400;
+}
+
+/* Top-level labels carry the weight; nested labels are regular. */
+.cp-tree > .cp-tree-item > .cp-tree-item__content > .cp-tree-item__label {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.cp-tree-item__trailing {
+  display: flex;
+  flex: none;
+  margin-left: var(--space-1);
+  color: var(--color-text-secondary);
+  transition: transform 150ms ease;
+}
+
+.cp-tree-item[aria-expanded="true"] > .cp-tree-item__content > .cp-tree-item__trailing {
+  transform: rotate(90deg);
+}
+
+.cp-tree-item__group-transition {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0 0 0 16px;
+  list-style: none;
+}
+
+/* Subitems are plain indented rows, not containers. Selection and focus below still apply. */
+.cp-tree-item__group-transition > .cp-tree-item > .cp-tree-item__content {
+  background: transparent;
+  box-shadow: none;
+}
+
+.cp-tree-item__group-transition
+  > .cp-tree-item:not([aria-selected="true"])
+  > .cp-tree-item__content:hover {
+  background: var(--color-bg-hover);
+  box-shadow: none;
+}
+
+/* Selection: only selectable items carry aria-selected; expandable-only groups never do. */
+.cp-tree-item[aria-selected="true"] > .cp-tree-item__content {
+  background: var(--color-bg-selected);
+  box-shadow: inset 3px 0 0 0 var(--color-action-primary);
+}
+
+.cp-tree-item[aria-selected="true"] > .cp-tree-item__content > .cp-tree-item__label {
+  color: var(--color-text-primary);
+}
+
+/* Keyboard focus lives on the treeitem; ring is drawn on the container. */
+.cp-tree-item:focus-visible > .cp-tree-item__content {
+  box-shadow: inset 0 0 0 2px var(--color-focus-ring);
+}
+
+.cp-tree-item[aria-selected="true"]:focus-visible > .cp-tree-item__content {
+  box-shadow:
+    inset 3px 0 0 0 var(--color-action-primary),
+    inset 0 0 0 2px var(--color-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-tree-item__trailing,
+  .cp-tree-item__content {
+    transition: none;
+  }
+}
