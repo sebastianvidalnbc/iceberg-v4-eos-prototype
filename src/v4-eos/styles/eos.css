@@ -450,10 +450,10 @@
 }
 /* Content Pages outline: one column, full height — scroll viewport matches pane tone. */
 .ui-ws-explorer--content-outline {
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-surface);
 }
 .ui-ws-explorer--content-outline [data-slot="scroll-area-viewport"] {
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-surface);
 }
 .ui-ws-explorer__pane--pages [data-chrome="panel-header"] {
   background: var(--color-bg-subtle);
