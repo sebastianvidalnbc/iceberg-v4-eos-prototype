@@ -1,0 +1,352 @@
+/* Iceberg UI — semantic design tokens.
+
+   THEMING ARCHITECTURE
+   --------------------
+   The `--color-*` tokens are *semantic roles* (surface / panel / text / border /
+   action / status), not raw values. Components reference the roles only, so a
+   theme is just a different set of values assigned to those roles — components
+   never change to re-theme.
+
+   - `:root` holds the LIGHT theme. These values map 1:1 to the prototype's
+     original raw values, so V1 (which reads `:root` and the legacy aliases
+     below) is byte-for-byte unchanged. Light is the default theme.
+   - `[data-theme="dark"]` (further down) overrides the same roles with dark
+     values. V2 opts in by setting that attribute on its shell; V1 never sets it,
+     so V1 stays light. A future additional theme is added the same way — a new
+     scoped block reassigning roles — with no component edits.
+
+   Rules: never hardcode a raw color in a component; add/adjust roles here. Never
+   change a `:root` value without auditing V1 (it consumes these + the aliases).
+   A legacy alias block below redefines the old variable names to point at these
+   tokens so index.css keeps working while resolving through tokens.
+
+   `[data-theme="light"]` is bound to the SAME light values here so a light
+   island can be nested inside a dark ancestor (e.g. the Live Preview, which
+   shows real Peacock output and must not inherit the CMS dark theme). It carries
+   the full light palette so it fully overrides an enclosing dark scope. */
+:root,
+[data-theme="light"] {
+  /* Color: background / surfaces (tonal steps, lightest → most recessed).
+     panel/elevated/hover/control are explicit surface roles; in the light theme
+     they intentionally resolve to existing values (zero visual drift) but exist
+     as distinct roles so the dark theme can give each its own tone. */
+  /* ===================================================================== */
+  /* EOS v1 — shipping foundation (source of truth: Eos Library v1.0 Figma, */
+  /* file N8BwUZPaO2artCvrsarVK2, entry node 554:5314; engineering values   */
+  /* cross-checked against the Eos team's design.md). Cool-neutral white/   */
+  /* gray surfaces; color reserved for brand, icons, selection, status.    */
+  /* Supersedes the prior warm-neutral "M3" trial — see Appendix A of      */
+  /* design.md for the retired direction. See v4-eos README.               */
+  /* ===================================================================== */
+  /* Color: background / surfaces (Eos §2.1 — white/light-gray only). */
+  --color-bg-canvas: #f5f5f5;      /* app / chrome background (Eos --bg) */
+  --color-bg-surface: #ffffff;     /* primary surface (Eos --surface) */
+  --color-bg-panel: #ffffff;       /* Explorer / Properties panels (Eos --surface) */
+  --color-bg-subtle: #f5f5f5;      /* subtle / recessed surface (Eos --surface-container) */
+  --color-bg-elevated: #ffffff;    /* menus / popovers / dialogs (Eos surfaces stay white) */
+  --color-bg-hover: #eeeeee;       /* hover surface (Eos --surface-high) */
+  --color-bg-selected: #e8f0fe;    /* list/tree selected surface (Eos --selected-bg, §3.6) */
+  --color-bg-control: #ffffff;     /* form control background (fields sit on white, §3.3) */
+  --color-bg-preview-canvas: #eeeeee;  /* neutral matte behind the preview (Eos --surface-high) */
+  /* Color: text (Eos §2.1 neutral text roles). */
+  --color-text-primary: #131416;
+  --color-text-secondary: #5f6368;
+  --color-text-muted: #757575;
+  --color-text-inverse: #ffffff;
+  /* Borders (Eos §2.1 neutral border roles). */
+  --color-border-default: #e0e0e0;   /* Eos --border */
+  --color-border-strong: #c4c4c4;    /* Eos --border-strong / --outline-variant (≈ rgba(0,0,0,.23) on white) */
+  /* Action / accent — Eos shipping interactive accent (§2.1, §3.2). Replaces
+     the prior Iceberg-blue (#01699b) application-system override; #01699b
+     remains only in the literal Iceberg logo mark (IcebergLogo.tsx, hardcoded
+     SVG fills), which is a brand asset, not the foundational action role. */
+  --color-action-primary: #1a73e8;         /* Eos --brand-primary */
+  --color-action-primary-hover: #186ad5;   /* Eos --brand-hover (Primary + 8% black) */
+  --color-action-primary-pressed: #1661c3; /* Eos --brand-pressed (Primary + 16% black) */
+  --color-action-primary-bg: #e8f0fe;      /* Eos --brand-container / --selected-bg */
+  --color-action-primary-border: var(--color-action-primary); /* Eos --selected-border */
+  /* Status — Eos exposes danger + success (§2.1); warning/info have no Eos
+     role yet (documented gap) and keep their prior accessible tones pending
+     Eos guidance. */
+  --color-status-success: #2e7d32;   /* Eos --success */
+  --color-status-success-bg: #e6f2ea;
+  --color-status-warning: #8a5a00;   /* UNKNOWN / PENDING EOS — no Eos warning role */
+  --color-status-warning-bg: #fbf0d9;
+  --color-status-danger: #d93025;    /* Eos --danger */
+  --color-status-danger-bg: #fceceb;
+  --color-status-info: #151719;      /* UNKNOWN / PENDING EOS — no Eos info role */
+  --color-status-info-bg: #dfdcdd;
+  /* Lifecycle — experimental / beta layouts (Iceberg's "Experiment" marker).
+     ICEBERG-SPECIFIC domain status, not an Eos role and not a second accent —
+     the Eos blue accent still owns action/selection/focus (§5, preserved
+     separately per instruction). */
+  --color-status-experiment: #6d40a8;
+  --color-status-experiment-bg: #f0e7fb;
+  /* Toast surface (Eos §3.6: "default #323232"). */
+  --color-toast-bg: #323232;
+  --color-toast-bg-hover: #2b2b2b;  /* computed: toast-bg × 0.85 (mechanical darken; no Eos hover token published) */
+  /* Nav chrome — Eos vertical Navigation rail is a light neutral surface
+     (§3.1). Active state is a plain neutral fill, NOT a blue tint. */
+  --color-nav-chrome-bg: #f0f0f0;          /* Eos --sidebar */
+  --color-nav-chrome-fg: #757575;          /* Eos --text-soft (idle) */
+  --color-nav-chrome-fg-strong: #131416;   /* Eos --text */
+  --color-nav-chrome-hover-bg: color-mix(in srgb, var(--color-action-primary-bg) 45%, transparent);
+  --color-nav-chrome-active-bg: var(--color-action-primary-bg);
+  --color-nav-chrome-active-fg: var(--color-action-primary);
+  --color-nav-chrome-border: var(--color-border-subtle);
+  /* Focus — Eos uses the brand accent for the focus indicator (§3.3). */
+  --color-focus-ring: var(--color-action-primary);
+  --focus-ring-width: 3px;
+  --focus-ring: 0 0 0 var(--focus-ring-width) rgba(26, 115, 232, 0.30);
+  /* Spacing — Eos §2.2 scale: 2-4-8-12-16 primary, 24/32/40 section. */
+  --space-0: 2px;   /* Eos --space-0 — tight icon↔label gap in nav */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  /* --space-5 (20px) is OFF-SCALE per Eos §2.2 (not one of 2-4-8-12-16-24-32-40).
+     Retained only for existing legacy consumers pending a component-level
+     spacing audit (see Phase 1 report); do not use in new work. */
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;  /* Eos --space-10 — empty states */
+  /* Control sizing — Eos §2.4: 36 standard / 32 compact / 40 optional-large.
+     Token names are retained from the existing V4 architecture (not renamed
+     to Eos's --btn-height / --control-h names) to avoid a call-site rewrite;
+     only the underlying values are corrected. */
+  --control-height-sm: 32px;   /* Eos --btn-height-sm / compact-dense */
+  --control-height-md: 36px;   /* Eos --btn-height-std / --control-h (STANDARD DEFAULT) */
+  --control-height-lg: 40px;   /* Eos --btn-height-lg (optional large CTA only) */
+  --control-pad-x: 12px;       /* Eos field pad-x; Eos button pad-x is 16px (component-phase item) */
+  /* V4 Properties inspector — scoped density on top of Eos tokens (see eos-design-system §7.11). */
+  --inspector-pad-x: 12px;
+  --inspector-pad-y: 12px;
+  --inspector-gap-section: 12px;
+  --inspector-gap-field: 4px;
+  --inspector-row-min-h: 36px;
+  --inspector-title-size: var(--type-title-md-size);
+  --inspector-title-lh: var(--type-title-md-lh);
+  --inspector-kind-size: var(--type-body-sm-size);
+  --inspector-kind-lh: var(--type-body-sm-lh);
+  --inspector-section-size: var(--type-title-sm-size);
+  --inspector-section-lh: var(--type-title-sm-lh);
+  --inspector-label-size: var(--type-label-md-size);
+  --inspector-label-lh: var(--type-label-md-lh);
+  --inspector-value-size: var(--type-body-md-size);
+  --inspector-value-lh: var(--type-body-md-lh);
+  --inspector-help-size: var(--type-body-sm-size);
+  --inspector-help-lh: var(--type-body-sm-lh);
+  /* V4 Structure explorer tree (Figma Layers–inspired density). */
+  --structure-tree-size: 13px;
+  --structure-tree-lh: 18px;
+  --structure-tree-row-h: 32px;
+  --structure-tree-pad-x: 6px;
+  /* Border width / radius — Eos §2.3 shape scale. */
+  --border-width: 1px;
+  --radius-field: 4px;  /* Eos --radius-field / --radius-xs — inputs, chips, small controls */
+  --radius-sm: 8px;      /* Eos --radius-sm / --radius — cards, panels, menus, nav hit area */
+  --radius-md: 12px;     /* Eos --radius-md — status pills (also used here for menus/cards; same px, see report) */
+  --radius-lg: 16px;     /* Eos --radius-lg — reserved (not used for nav icon shells) */
+  --radius-pill: 100px;
+  /* Backdrop behind the floating workspace surfaces (deeper than Surface so the
+     rail + workspace read as inset sheets). Eos --sidebar neutral. */
+  --color-bg-app: #f0f0f0;
+  /* Eos Library Opshub bar (Overlay): white 48px chrome, black lockup. */
+  --color-opshub: #ffffff;
+  --color-opshub-fg: #000000;
+  --color-opshub-env-intnft: #275996;
+  /* Hairline for quiet in-surface separation (lighter than border-default).
+     UNKNOWN / PENDING EOS VERIFICATION — Eos (§2.1) defines only two border
+     tiers (--border / --border-strong), no separate subtle/hairline role;
+     retaining the existing quiet value rather than darkening every divider to
+     --border, which would add unwanted visual weight (see design.md §Borders
+     "hierarchy from surface/spacing/typography... not excessive boxes"). */
+  --color-border-subtle: rgba(0, 0, 0, 0.06);
+  /* Elevation — Eos §2.3 shadow roles (mapped directly; not previously
+     verified against a real Eos source, so the old M3 multi-layer shadows
+     are replaced outright). */
+  --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.08);   /* Eos --shadow-sm — cards */
+  --elevation-2: 0 4px 16px rgba(0, 0, 0, 0.12);  /* Eos --shadow-md — menus, toasts */
+  /* Scrim behind modal overlays. UNKNOWN / PENDING EOS VERIFICATION — no Eos
+     scrim role found; retaining the existing neutral value. */
+  --color-scrim: rgba(0, 0, 0, 0.4);
+  /* Typography — Eos ships Inter only (§1). Roboto removed. */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Legacy flat scale — RETAINED for existing call sites (do not rewrite in
+     this pass). Values already numerically align with several Eos roles
+     (noted inline); --text-xs/--text-md/--text-xl have no exact Eos-role
+     match and are flagged as compatibility-only. Prefer the --type-* Eos
+     semantic roles below for new work. */
+  --text-xs: 11px;   /* compatibility-only — between Eos Label Badge (9) and Body Small (12) */
+  --text-sm: 12px;   /* aligns with Eos Body Small / Label Medium (12/16) */
+  --text-md: 13px;   /* compatibility-only — no exact Eos role at 13px */
+  --text-base: 14px; /* aligns with Eos Body Medium / Title Small / Label Large (14/20) */
+  --text-lg: 16px;   /* aligns with Eos Body Large / Title Medium (16/24) */
+  --text-xl: 20px;   /* compatibility-only — no exact Eos role at 20px */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --lh-tight: 1.15;
+  --lh-normal: 1.5;
+  /* ---------------------------------------------------------------------
+     Eos semantic typography roles (design.md §1; Display/Headline/Title/
+     Body verified against Figma node 554:5314 — Display Large's line-height
+     is 64px per Figma, not the 67px in design.md; Figma wins, see Phase 1
+     report §15 for the conflict). Label tier sizes/line-heights come from
+     design.md; the raw Figma frame naming for the Label tier does not map
+     1:1 to design.md's Label names (also flagged in the report) but this
+     does not affect any consumer in this phase. These roles are NEW — no
+     component consumes them yet; component-level adoption is a later phase.
+     --------------------------------------------------------------------- */
+  --type-display-lg-size: 57px; --type-display-lg-lh: 67px;
+  --type-display-md-size: 45px; --type-display-md-lh: 52px;
+  --type-display-sm-size: 36px; --type-display-sm-lh: 44px;
+  --type-headline-lg-size: 32px; --type-headline-lg-lh: 40px;
+  --type-headline-md-size: 28px; --type-headline-md-lh: 36px;
+  --type-headline-sm-size: 24px; --type-headline-sm-lh: 32px;
+  --type-title-lg-size: 22px; --type-title-lg-lh: 28px;
+  --type-title-md-size: 16px; --type-title-md-lh: 24px;
+  --type-title-sm-size: 14px; --type-title-sm-lh: 20px;
+  --type-body-lg-size: 16px; --type-body-lg-lh: 24px;
+  --type-body-md-size: 14px; --type-body-md-lh: 20px;
+  --type-body-sm-size: 12px; --type-body-sm-lh: 16px;
+  --type-label-lg-size: 14px; --type-label-lg-lh: 20px;
+  --type-label-md-size: 12px; --type-label-md-lh: 16px;
+  --type-label-xs-size: 10px; --type-label-xs-lh: 16px;
+  --type-label-badge-size: 9px; --type-label-badge-lh: 16px;
+  --type-label-env-size: 8px;   /* Eos Opshub env-chip wordmark (Figma 449:15743) */
+  /* Motion */
+  --motion-fast: 120ms;
+  --motion-normal: 160ms;
+  --motion-slow: 240ms;
+  --ease-standard: ease-out;
+  /* Z-index */
+  --z-sticky: 5;
+  --z-nav: 20;
+  --z-dropdown: 100;
+  --z-overlay: 1000;
+  /* Indentation (16px/level; token-driven for easy tuning) */
+  --indent-0: 0;
+  --indent-1: 16px;
+  --indent-2: 32px;
+  --indent-3: 48px;
+  --indent-4: 64px;
+}
+
+/* LEGACY COMPATIBILITY ALIASES — do not use for new shared UI development.
+   These old variable names (used by V1's index.css) resolve through the
+   semantic tokens above with identical values, so V1 computed styles stay
+   byte-for-byte equivalent. New shared UI must use the semantic token names
+   (e.g. --color-action-primary, not --blue). */
+:root {
+  --bg: var(--color-bg-canvas);
+  --surface: var(--color-bg-surface);
+  --surface-2: var(--color-bg-subtle);
+  --border: var(--color-border-default);
+  --border-strong: var(--color-border-strong);
+  --text: var(--color-text-primary);
+  --text-2: var(--color-text-secondary);
+  --text-3: var(--color-text-muted);
+  --blue: var(--color-action-primary);
+  --blue-bg: var(--color-action-primary-bg);
+  --blue-border: var(--color-action-primary-border);
+  --green: var(--color-status-success);
+  --green-bg: var(--color-status-success-bg);
+  --amber: var(--color-status-warning);
+  --amber-bg: var(--color-status-warning-bg);
+  --red: var(--color-status-danger);
+  --red-bg: var(--color-status-danger-bg);
+  --radius: var(--radius-sm);
+  --shadow: var(--elevation-1);
+  --shadow-lg: var(--elevation-2);
+  --mono: var(--font-mono);
+  --sans: var(--font-sans);
+}
+
+/* ============================================================================
+   DARK THEME — V2's default. Overrides only the color ROLES defined above;
+   spacing, type, radius, motion, z-index and indentation are theme-agnostic and
+   stay shared. Opt in by setting `data-theme="dark"` on a container (V2 sets it
+   on its shell). V1 never sets it, so V1 keeps the light `:root` values.
+
+   Design intent — a modern professional authoring tool:
+   • dark rail / Explorer / Structure / Properties with SUBTLE tonal steps
+     between surfaces (tone, not heavy borders) — canvas < panel < subtle <
+     elevated, each a small lift so hierarchy reads without hard lines;
+   • restrained accent (a slightly brighter blue) used only for selection and
+     primary actions; selected surfaces are a low-chroma blue-tinted fill;
+   • elevated dark menus/popovers/dialogs sit above panels with a real shadow;
+   • high readability WITHOUT pure-white body text (primary is a soft off-white,
+     secondary/muted step down) to reduce glare;
+   • strong, clearly visible focus ring on the dark ground.
+   The legacy aliases resolve THROUGH these roles, so any shared component that
+   still uses an alias also themes correctly. Only V1 (never dark) reads them.
+   ============================================================================ */
+[data-theme="dark"] {
+  /* Backgrounds / surfaces — subtle tonal ladder (darkest chrome → elevated). */
+  --color-bg-canvas: #0f1419;      /* app / chrome background (behind panels) */
+  --color-bg-surface: #171d25;     /* primary surface (panel base) */
+  --color-bg-panel: #1a212b;       /* Explorer / Properties panels (a step up) */
+  --color-bg-subtle: #12181f;      /* recessed surface (below the base tone) */
+  --color-bg-elevated: #232c38;    /* menus / popovers / dialogs / tooltips */
+  --color-bg-hover: #222b36;       /* hover surface */
+  --color-bg-selected: #1c2c44;    /* low-chroma blue-tinted selected fill */
+  --color-bg-control: #1f2731;     /* compact form-control background */
+  --color-bg-preview-canvas: #0c0f13;   /* neutral matte behind the preview */
+
+  /* Text — soft off-white primary (never #fff), stepped secondary/muted. */
+  --color-text-primary: #e6ebf2;
+  --color-text-secondary: #9aa7b8;
+  --color-text-muted: #6b7280;
+  --color-text-inverse: #0f1419;   /* text on light/accent fills */
+
+  /* Borders — quiet; hierarchy comes from surface tone, not heavy lines. */
+  --color-border-default: #29323d;
+  --color-border-strong: #3a4552;
+
+  /* Action / accent — a touch brighter so it reads on the dark ground. */
+  --color-action-primary: #4d8dff;
+  --color-action-primary-hover: #6ba1ff;
+  --color-action-primary-bg: #16233a;
+  --color-action-primary-border: #2f4568;
+
+  /* Status — brightened foregrounds + low-chroma tinted backgrounds for dark. */
+  --color-status-success: #34d399;
+  --color-status-success-bg: #10241d;
+  --color-status-warning: #fbbf24;
+  --color-status-warning-bg: #2a2113;
+  --color-status-danger: #f87171;
+  --color-status-danger-bg: #2c1618;
+  --color-status-info: #4d8dff;
+  --color-status-info-bg: #16233a;
+
+  /* Lifecycle — experiment/beta (brightened violet on a low-chroma dark tint). */
+  --color-status-experiment: #c4a5f0;
+  --color-status-experiment-bg: #241a33;
+
+  /* Toast — align to the elevated dark surface. */
+  --color-toast-bg: #232c38;
+  --color-toast-bg-hover: #2b3644;
+
+  /* App-nav chrome — the rail is part of the dark shell (slightly distinct). */
+  --color-nav-chrome-bg: #12171e;
+  --color-nav-chrome-fg: rgba(230, 235, 242, 0.68);
+  --color-nav-chrome-fg-strong: #e6ebf2;
+  --color-nav-chrome-hover-bg: rgba(255, 255, 255, 0.06);
+  --color-nav-chrome-active-bg: rgba(77, 141, 255, 0.18);
+  --color-nav-chrome-border: rgba(255, 255, 255, 0.08);
+
+  /* Focus — strong, visible on dark; matches the brighter accent. */
+  --color-focus-ring: var(--color-action-primary);
+  --focus-ring: 0 0 0 var(--focus-ring-width) rgba(77, 141, 255, 0.45);
+
+  /* Elevation — deeper, darker shadows read on the dark ground. */
+  --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5);
+  --elevation-2: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* Scrim — deeper on the dark ground so overlays still read. */
+  --color-scrim: rgba(0, 0, 0, 0.6);
+}
