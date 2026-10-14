@@ -10,8 +10,9 @@ import {
 import { Button } from "@/v4-eos/ui/button";
 import { SearchInput } from "@/v4-eos/ui/panel";
 import { ScrollArea } from "@/v4-eos/ui/scroll-area";
-import { Icon } from "../ui-lib/Icon";
+import { MSym } from "@/v4-eos/ui/msym";
 import { LAYOUT_CATALOG, type LayoutDef, type LayoutGroup } from "../layouts";
+import { LAYOUT_TYPES, layoutTypeOf } from "../layout-identity";
 
 const GROUP_ORDER: LayoutGroup[] = [
   "Plan Pickers",
@@ -211,11 +212,15 @@ export function LayoutPicker({
                               : "text-foreground hover:bg-[var(--color-bg-subtle)]")
                           }
                         >
-                          <Icon
-                            name={l.icon}
-                            size={16}
-                            className={active ? "text-white" : "text-muted-foreground"}
-                          />
+                          <span
+                            aria-hidden
+                            data-layout-type={layoutTypeOf(l)}
+                            className={
+                              "layout-chip" + (active ? " layout-chip--on" : "")
+                            }
+                          >
+                            <MSym name={LAYOUT_TYPES[layoutTypeOf(l)].icon} size={14} />
+                          </span>
                           <span className="min-w-0 flex-1 truncate">{l.name}</span>
                           {l.experiment && <ExperimentBadge />}
                         </button>

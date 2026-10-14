@@ -21,7 +21,7 @@ import { cn } from "@/v4-eos/ui/lib/utils";
 
 // Inspector fields: Eos standard control height (36px) with body-sized values.
 const FIELD =
-  "h-[var(--control-height-md)] rounded-[var(--radius-field)] bg-[var(--color-bg-subtle)] text-[length:var(--type-body-md-size)] leading-[length:var(--type-body-md-lh)] focus-visible:bg-[var(--color-bg-surface)]";
+  "h-[var(--control-height-md)] rounded-[var(--radius-field)] bg-[var(--color-bg-subtle)] text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] focus-visible:bg-[var(--color-bg-surface)]";
 
 export function TextField(
   props: React.ComponentProps<typeof Input> & { invalid?: boolean },
@@ -50,7 +50,7 @@ export function TextAreaField(
       {...rest}
       aria-invalid={invalid || undefined}
       className={cn(
-        "min-h-16 rounded-[var(--radius-field)] bg-[var(--color-bg-subtle)] text-[length:var(--type-body-md-size)] leading-[length:var(--type-body-md-lh)] focus-visible:bg-[var(--color-bg-surface)]",
+        "min-h-16 rounded-[var(--radius-field)] bg-[var(--color-bg-subtle)] text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] focus-visible:bg-[var(--color-bg-surface)]",
         className,
       )}
     />
@@ -134,7 +134,7 @@ export function SelectField({
         aria-label={ariaLabel}
         className={cn(
           FIELD,
-          "w-full min-w-0 max-w-full [&_[data-slot=select-value]]:min-w-0 [&_[data-slot=select-value]]:truncate",
+          "data-[size=sm]:h-[var(--control-height-md)] w-full min-w-0 max-w-full [&_[data-slot=select-value]]:min-w-0 [&_[data-slot=select-value]]:truncate",
           triggerClassName,
         )}
       >
@@ -147,7 +147,7 @@ export function SelectField({
             <SelectItem
               key={opt.value}
               value={opt.value}
-              className="text-[length:var(--type-body-md-size)] leading-[length:var(--type-body-md-lh)]"
+              className="text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)]"
             >
               {opt.label}
             </SelectItem>
@@ -183,7 +183,7 @@ export function RadioField({
             <RadioGroupItem id={optId} value={opt} />
             <Label
               htmlFor={optId}
-              className="text-[length:var(--type-body-md-size)] font-normal leading-[length:var(--type-body-md-lh)]"
+              className="text-[length:var(--type-body-sm-size)] font-normal leading-[length:var(--type-body-sm-lh)]"
             >
               {opt}
             </Label>

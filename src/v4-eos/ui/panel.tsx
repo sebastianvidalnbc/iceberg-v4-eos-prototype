@@ -85,7 +85,7 @@ export function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-[var(--control-height-md)] min-w-0 rounded-[var(--radius-field)] bg-[var(--color-bg-control)] pl-7 pr-7 text-[length:var(--type-body-md-size)] leading-[length:var(--type-body-md-lh)]"
+        className="h-[var(--control-height-md)] min-w-0 rounded-[var(--radius-field)] bg-[var(--color-bg-control)] pl-7 pr-7 text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)]"
       />
       {value && onClear && (
         <button

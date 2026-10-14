@@ -49,9 +49,9 @@
   box-shadow: inset 0 0 0 1px var(--color-border-subtle);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
-  font-size: var(--type-body-md-size);
+  font-size: var(--type-body-sm-size);
   font-weight: 400;
-  line-height: var(--type-body-md-lh);
+  line-height: var(--type-body-sm-lh);
   cursor: pointer;
   user-select: none;
   transition: background-color 150ms ease, box-shadow 150ms ease;

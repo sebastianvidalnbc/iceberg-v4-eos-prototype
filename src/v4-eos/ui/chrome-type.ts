@@ -13,12 +13,12 @@ export const chromeType = {
   panelSub:
     "truncate text-[length:var(--type-body-sm-size)] font-normal leading-[length:var(--type-body-sm-lh)] text-muted-foreground",
   treeLabel:
-    "text-[length:var(--type-body-md-size)] font-normal leading-[length:var(--type-body-md-lh)] text-foreground/90",
+    "text-[length:var(--type-body-sm-size)] font-normal leading-[length:var(--type-body-sm-lh)] text-foreground/90",
   treeLabelSelected: "font-medium text-foreground",
   treeLabelMuted:
     "font-mono text-[length:var(--type-body-sm-size)] font-normal leading-[length:var(--type-body-sm-lh)] text-muted-foreground",
   toolbarControl:
-    "text-[length:var(--type-body-md-size)] font-normal leading-[length:var(--type-body-md-lh)]",
+    "text-[length:var(--type-body-sm-size)] font-normal leading-[length:var(--type-body-sm-lh)]",
   breadcrumb:
     "text-[length:var(--type-body-sm-size)] font-normal leading-[length:var(--type-body-sm-lh)] text-muted-foreground",
   breadcrumbCurrent:

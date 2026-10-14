@@ -270,7 +270,7 @@ function TemplateCardButton({ card, onSelect }: { card: TemplateCard; onSelect: 
       >
         <Icon name={card.icon} size={20} />
       </span>
-      <span className="text-[length:var(--type-title-sm-size)] leading-[length:var(--type-title-sm-lh)] font-semibold text-foreground">{card.name}</span>
+      <span className="text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] font-semibold text-foreground">{card.name}</span>
       <span className="text-[length:var(--type-body-sm-size)] leading-snug text-muted-foreground">
         {card.description}
       </span>
@@ -816,7 +816,7 @@ function InlineFeatureCollections({
                     onClick={() => childType && onAddChild(list.id, childType)}
                     title={`Add ${nounLower}`}
                     aria-label={`Add ${nounLower}`}
-                    className="inline-flex h-8 items-center gap-1.5 rounded-md border border-dashed border-[var(--color-border-subtle)] px-2.5 text-[length:var(--type-label-md-size)] leading-[length:var(--type-label-md-lh)] font-medium text-muted-foreground transition-colors hover:border-[var(--color-action-primary)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-40"
+                    className="inline-flex h-[var(--control-height-md)] items-center gap-1.5 rounded-[var(--radius-field)] border border-dashed border-[var(--color-border-default)] px-2.5 text-[length:var(--type-label-md-size)] leading-[length:var(--type-label-md-lh)] font-medium text-muted-foreground transition-colors hover:border-[var(--color-action-primary)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-40"
                   >
                     <MSym name="add" size={16} />
                     Add {nounLower}

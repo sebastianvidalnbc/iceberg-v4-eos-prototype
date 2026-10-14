@@ -129,17 +129,17 @@
   --inspector-title-lh: var(--type-title-md-lh);
   --inspector-kind-size: var(--type-body-sm-size);
   --inspector-kind-lh: var(--type-body-sm-lh);
-  --inspector-section-size: var(--type-title-sm-size);
-  --inspector-section-lh: var(--type-title-sm-lh);
+  --inspector-section-size: var(--type-body-sm-size);
+  --inspector-section-lh: var(--type-body-sm-lh);
   --inspector-label-size: var(--type-label-md-size);
   --inspector-label-lh: var(--type-label-md-lh);
-  --inspector-value-size: var(--type-body-md-size);
-  --inspector-value-lh: var(--type-body-md-lh);
+  --inspector-value-size: var(--type-body-sm-size);
+  --inspector-value-lh: var(--type-body-sm-lh);
   --inspector-help-size: var(--type-body-sm-size);
   --inspector-help-lh: var(--type-body-sm-lh);
   /* V4 Structure explorer tree (Figma Layers–inspired density). */
-  --structure-tree-size: 13px;
-  --structure-tree-lh: 18px;
+  --structure-tree-size: 12px;
+  --structure-tree-lh: 16px;
   --structure-tree-row-h: 32px;
   --structure-tree-pad-x: 6px;
   /* Border width / radius — Eos §2.3 shape scale. */

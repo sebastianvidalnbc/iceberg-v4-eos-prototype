@@ -1,0 +1,114 @@
+/* Layout identity — one accent per layout TYPE (see layout-identity.ts).
+   Accents are muted, low-saturation hues chosen to stay clear of the Eos blue
+   action/selection colour. Each region tints its whole subtree with a light
+   wash of its accent, mixed onto the panel surface so the sticky row menus can
+   match the wash exactly. */
+
+:root {
+  --layout-hero: #15803d;
+  --layout-plan-picker: #a16207;
+  --layout-content: #0f766e;
+  --layout-media: #be185d;
+  --layout-commerce: #c2410c;
+  --layout-footer: #7e22ce;
+  --layout-structure: #475569;
+}
+
+[data-layout-type="hero"] { --layout-accent: var(--layout-hero); }
+[data-layout-type="plan-picker"] { --layout-accent: var(--layout-plan-picker); }
+[data-layout-type="content"] { --layout-accent: var(--layout-content); }
+[data-layout-type="media"] { --layout-accent: var(--layout-media); }
+[data-layout-type="commerce"] { --layout-accent: var(--layout-commerce); }
+[data-layout-type="footer"] { --layout-accent: var(--layout-footer); }
+[data-layout-type="structure"] { --layout-accent: var(--layout-structure); }
+
+/* Structure Explorer gutter: top-level rows sit in a left gutter that holds the
+   vertical layout label. Applied to every top-level block so untitled sections
+   and the insert bars line up with the regions. */
+.layout-gutter {
+  padding-left: 18px;
+}
+
+/* Structure Explorer: one region per top-level layout. Rows inside inherit the
+   wash through --structure-tree-canvas (row menus read it via --row-bg). */
+.layout-region {
+  --layout-wash: color-mix(in srgb, var(--layout-accent) 7%, var(--color-bg-panel));
+  --structure-tree-canvas: var(--layout-wash);
+  position: relative;
+  background: var(--layout-wash);
+}
+
+/* Leading edge: a 3px accent bar down the left of the whole region. z-index
+   lifts it above the rows (which are positioned), so no row fill covers it. */
+.layout-region::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: var(--space-1);
+  bottom: var(--space-1);
+  width: 3px;
+  background: var(--layout-accent);
+  pointer-events: none;
+}
+
+/* Vertical layout name in the gutter, reading bottom-to-top. */
+.layout-region::after {
+  content: attr(data-layout-label);
+  position: absolute;
+  left: -16px;
+  top: var(--space-2);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--layout-accent);
+  pointer-events: none;
+}
+
+/* The tree root's 1px inter-row gap would show as a panel-coloured seam between
+   a region and its boundary bar. Top-level blocks butt together in region mode. */
+.structure-tree-root:has(> .layout-gutter) {
+  gap: 0;
+}
+
+/* Boundary between two top-level sections: the insert bar is split at its
+   centre line, so the wash above reaches the line from the top and the wash
+   below reaches it from the bottom. */
+.layout-boundary {
+  background: linear-gradient(
+    to bottom,
+    var(--boundary-above, transparent) 50%,
+    var(--boundary-below, transparent) 50%
+  );
+}
+
+/* Icon chip (Layout Picker rows and the region header icon). */
+.layout-chip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-field);
+  background: color-mix(in srgb, var(--layout-accent) 14%, transparent);
+  color: var(--layout-accent);
+}
+
+/* Picker row is selected (blue fill): keep the accent glyph legible on white. */
+.layout-chip--on {
+  background: #ffffff;
+}
+
+/* Selected row inside a layout region: the row takes a stronger tint of the
+   layout's own accent instead of the Eos blue. Same specificity layer as the
+   row's utility classes, so it wins over the default selected fill. */
+.layout-region .structure-tree-row[aria-selected="true"] {
+  --layout-selected: color-mix(in srgb, var(--layout-accent) 18%, var(--color-bg-panel));
+  background: var(--layout-selected);
+  --row-bg: var(--layout-selected);
+}
