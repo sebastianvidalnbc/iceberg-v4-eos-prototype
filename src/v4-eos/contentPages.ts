@@ -208,6 +208,8 @@ export interface OutlineNode {
   label: string;
   hint?: string;
   selectable?: boolean;
+  // Material Symbol shown in the top-level outline row (subitems have none).
+  icon?: string;
   children?: OutlineNode[];
 }
 
@@ -456,11 +458,12 @@ export const DEFAULT_CONTENT_PAGE: ContentPageConfig = {
 // Production Iceberg Content Page form headings, in source order. Only the
 // tabbed/grouped sections become nested tree nodes.
 export const CONTENT_PAGE_OUTLINE: OutlineNode[] = [
-  { id: "overview", label: "Content Page" },
-  { id: "widgets", label: "Content Page Widgets" },
+  { id: "overview", label: "Content Page", icon: "article" },
+  { id: "widgets", label: "Content Page Widgets", icon: "widgets" },
   {
     id: "memberships",
     label: "Memberships",
+    icon: "card_membership",
     selectable: false,
     children: [
       { id: "pass-select", label: "Select" },
@@ -470,15 +473,17 @@ export const CONTENT_PAGE_OUTLINE: OutlineNode[] = [
   },
   {
     id: "filter-recommended",
-    label: "Filter Recommended Carousel by Content Segment",
+    label: "Recommended Carousel Filter",
+    icon: "filter_alt",
   },
-  { id: "faq-override", label: "FAQ Override" },
-  { id: "territory-pages", label: "Content Pages for Territory" },
-  { id: "accessibility", label: "Accessibility - Skip Links" },
-  { id: "urls", label: "PDP URLs" },
+  { id: "faq-override", label: "FAQ Override", icon: "help" },
+  { id: "territory-pages", label: "Content Pages for Territory", icon: "public" },
+  { id: "accessibility", label: "Accessibility - Skip Links", icon: "accessibility_new" },
+  { id: "urls", label: "PDP URLs", icon: "link" },
   {
     id: "texts",
     label: "Texts",
+    icon: "text_fields",
     selectable: false,
     children: [
       { id: "episodes", label: "Episode Text" },
@@ -487,10 +492,11 @@ export const CONTENT_PAGE_OUTLINE: OutlineNode[] = [
       { id: "video", label: "Video Text" },
     ],
   },
-  { id: "carousels", label: "Content Page Carousels" },
+  { id: "carousels", label: "Content Page Carousels", icon: "view_carousel" },
   {
     id: "translation-copy",
     label: "Translation Copy",
+    icon: "translate",
     selectable: false,
     children: [
       { id: "i18n", label: "Common Words" },

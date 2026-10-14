@@ -122,7 +122,7 @@
 
 /* ---------- Navigation ---------- */
 .ui-tabs { display: flex; flex-direction: column; gap: var(--space-3); }
-.ui-tablist { display: inline-flex; gap: var(--space-1); border-bottom: var(--border-width) solid var(--color-border-default); }
+.ui-tablist { display: inline-flex; gap: var(--space-1); border-bottom: var(--border-width) solid var(--color-border-subtle); }
 .ui-tab {
   border: 0; background: none; color: var(--color-text-secondary);
   padding: var(--space-2) var(--space-3);
@@ -193,7 +193,7 @@
 }
 .ui-section__head:hover { background: var(--color-bg-subtle); }
 .ui-section__head:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-.ui-section__body { padding: var(--space-3); border-top: var(--border-width) solid var(--color-border-default); display: flex; flex-direction: column; gap: var(--space-3); }
+.ui-section__body { padding: var(--space-3); border-top: var(--border-width) solid var(--color-border-subtle); display: flex; flex-direction: column; gap: var(--space-3); }
 
 .ui-collection { display: flex; flex-direction: column; }
 .ui-collection__head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-1); }
@@ -356,7 +356,7 @@
    Level 5 Item = compact bordered card (top-level) or lightweight row (nested). */
 
 /* Level 2 — Section (structural, full-width, architectural) */
-.ui-section-block { border-bottom: var(--border-width) solid var(--color-border-strong); background: var(--color-bg-canvas); }
+.ui-section-block { border-bottom: var(--border-width) solid var(--color-border-subtle); background: var(--color-bg-canvas); }
 .ui-section-block--placeholder .ui-section-head { cursor: default; color: var(--color-text-secondary); }
 .ui-section-head {
   display: flex; align-items: center; gap: var(--space-3); width: 100%; text-align: left;
@@ -371,10 +371,10 @@
 .ui-section-head__name { font-size: var(--type-title-lg-size); line-height: var(--type-title-lg-lh); font-weight: var(--fw-bold); letter-spacing: -0.01em; }
 /* Eos §1.10 "Monospace IDs -> Body Small + ui-monospace". */
 .ui-section-head__id { margin-left: auto; font-family: var(--font-mono); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); color: var(--color-text-muted); flex: none; }
-.ui-section-block__body { padding: var(--space-4) var(--space-2) var(--space-5); background: var(--color-bg-subtle); border-top: var(--border-width) solid var(--color-border-default); }
+.ui-section-block__body { padding: var(--space-4) var(--space-2) var(--space-5); background: var(--color-bg-subtle); border-top: var(--border-width) solid var(--color-border-subtle); }
 
 /* Level 3 — Section view tabs (subordinate to the Section title) */
-.ui-section-views { display: inline-flex; gap: var(--space-4); margin-bottom: var(--space-4); border-bottom: var(--border-width) solid var(--color-border-default); }
+.ui-section-views { display: inline-flex; gap: var(--space-4); margin-bottom: var(--space-4); border-bottom: var(--border-width) solid var(--color-border-subtle); }
 .ui-section-view { border: 0; background: none; color: var(--color-text-secondary); padding: var(--space-2) 2px var(--space-2); font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-lh); font-weight: var(--fw-medium); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .ui-section-view:hover { color: var(--color-text-primary); }
 .ui-section-view[aria-selected="true"] { color: var(--color-action-primary); font-weight: var(--fw-semibold); border-bottom-color: var(--color-action-primary); }
@@ -417,7 +417,7 @@
 .ui-var-card:hover .ui-var-card__overflow, .ui-var-card.is-expanded .ui-var-card__overflow { opacity: 1; }
 .ui-var-card__overflow:hover { background: var(--color-bg-subtle); color: var(--color-text-primary); }
 .ui-var-card__overflow:focus-visible { outline: none; box-shadow: var(--focus-ring); opacity: 1; }
-.ui-var-card__body { padding: var(--space-4) var(--space-3); border-top: var(--border-width) solid var(--color-border-default); display: flex; flex-direction: column; gap: var(--space-3); }
+.ui-var-card__body { padding: var(--space-4) var(--space-3); border-top: var(--border-width) solid var(--color-border-subtle); display: flex; flex-direction: column; gap: var(--space-3); }
 
 /* Level 5 (nested) — lightweight indented row; NOT a card */
 .ui-nrow { position: relative; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2); border-radius: var(--radius-sm); color: var(--color-text-primary); user-select: none; cursor: pointer; }
@@ -437,7 +437,7 @@
 .ui-nrow:hover .ui-nrow__overflow { opacity: 1; }
 .ui-nrow__overflow:hover { background: var(--color-border-default); color: var(--color-text-primary); }
 .ui-nrow__overflow:focus-visible { outline: none; box-shadow: var(--focus-ring); opacity: 1; }
-.ui-nrow__children { margin: var(--space-1) 0 var(--space-2) 11px; padding: var(--space-2) 0 var(--space-1) 18px; border-left: var(--border-width) solid var(--color-border-default); display: flex; flex-direction: column; gap: var(--space-3); }
+.ui-nrow__children { margin: var(--space-1) 0 var(--space-2) 11px; padding: var(--space-2) 0 var(--space-1) 18px; border-left: var(--border-width) solid var(--color-border-subtle); display: flex; flex-direction: column; gap: var(--space-3); }
 
 /* Shared row affordances (validation + disabled tag) reused by card & row */
 .ui-row-warn { display: inline-flex; align-items: center; flex: none; color: var(--color-status-warning); }
@@ -445,16 +445,16 @@
 
 /* ---------- Design-system docs layout (tokens only; no duplicated component CSS) ---------- */
 .ui-ds { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; background: var(--color-bg-canvas); color: var(--color-text-primary); }
-.ui-ds__back { grid-column: 1 / -1; padding: var(--space-3) var(--space-5); color: var(--color-action-primary); text-decoration: none; font-weight: var(--fw-semibold); font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-lh); border-bottom: var(--border-width) solid var(--color-border-default); background: var(--color-bg-surface); }
+.ui-ds__back { grid-column: 1 / -1; padding: var(--space-3) var(--space-5); color: var(--color-action-primary); text-decoration: none; font-weight: var(--fw-semibold); font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-lh); border-bottom: var(--border-width) solid var(--color-border-subtle); background: var(--color-bg-surface); }
 .ui-ds__back:hover { text-decoration: underline; }
-.ui-ds__nav { position: sticky; top: 0; align-self: start; padding: var(--space-5) var(--space-3); border-right: var(--border-width) solid var(--color-border-default); background: var(--color-bg-surface); height: calc(100vh - 46px); overflow-y: auto; }
+.ui-ds__nav { position: sticky; top: 0; align-self: start; padding: var(--space-5) var(--space-3); border-right: var(--border-width) solid var(--color-border-subtle); background: var(--color-bg-surface); height: calc(100vh - 46px); overflow-y: auto; }
 .ui-ds__nav ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .ui-ds__nav a { display: block; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--color-text-secondary); text-decoration: none; font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-lh); }
 .ui-ds__nav a:hover { background: var(--color-bg-subtle); color: var(--color-text-primary); }
 .ui-ds__nav a:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .ui-ds__content { padding: var(--space-6) var(--space-8); max-width: 960px; }
 .ui-ds__content h1 { font-size: var(--type-headline-sm-size); line-height: var(--type-headline-sm-lh); letter-spacing: -0.02em; margin: 0 0 var(--space-2); }
-.ui-ds__content h2 { font-size: var(--type-title-md-size); line-height: var(--type-title-md-lh); margin: var(--space-8) 0 var(--space-3); padding-top: var(--space-4); border-top: var(--border-width) solid var(--color-border-default); }
+.ui-ds__content h2 { font-size: var(--type-title-md-size); line-height: var(--type-title-md-lh); margin: var(--space-8) 0 var(--space-3); padding-top: var(--space-4); border-top: var(--border-width) solid var(--color-border-subtle); }
 .ui-ds__content h3 { font-size: var(--type-title-sm-size); line-height: var(--type-title-sm-lh); margin: var(--space-5) 0 var(--space-2); }
 .ui-ds__lead { color: var(--color-text-secondary); line-height: var(--lh-normal); margin: 0 0 var(--space-4); }
 .ui-ds__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: var(--space-2) 0; }
@@ -514,7 +514,7 @@
   display: flex;
   align-items: center;
   padding: var(--space-2) var(--space-4);
-  border-bottom: var(--border-width) solid var(--color-border-default);
+  border-bottom: var(--border-width) solid var(--color-border-subtle);
   background: var(--color-bg-surface);
 }
 .ui-ws {
@@ -528,7 +528,7 @@
   font-size: var(--type-body-md-size);
 }
 .ui-ws__region { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-.ui-ws__region + .ui-ws__region { border-left: var(--border-width) solid var(--color-border-default); }
+.ui-ws__region + .ui-ws__region { border-left: var(--border-width) solid var(--color-border-subtle); }
 
 /* App Nav — narrow, subordinate rail. Dark navy chrome (matches real Iceberg).
    Now a flex child of the shell (its own fixed-width column) rather than a grid
@@ -573,7 +573,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-ws-nav__item--active .ui-ws-nav__label { font-weight: var(--fw-semibold); }
 
 /* Region header — shared quiet section label used by Explorer/Properties. */
-.ui-ws-head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: var(--border-width) solid var(--color-border-default); flex: none; }
+.ui-ws-head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: var(--border-width) solid var(--color-border-subtle); flex: none; }
 .ui-ws-head--stacked { flex-direction: column; align-items: stretch; gap: var(--space-2); }
 .ui-ws-head__eyebrow { font-size: var(--type-label-md-size); line-height: var(--type-label-md-lh); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semibold); color: var(--color-text-muted); }
 .ui-ws-head__sub { font-size: var(--type-label-md-size); line-height: var(--type-label-md-lh); font-weight: var(--fw-semibold); color: var(--color-text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -585,7 +585,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-ws-explorer { background: var(--color-bg-panel); }
 .ui-ws-explorer__pane { display: flex; flex-direction: column; min-height: 0; }
 .ui-ws-explorer__pane--pages { flex: 0 1 42%; }
-.ui-ws-explorer__pane--structure { flex: 1 1 58%; border-top: var(--border-width) solid var(--color-border-strong); }
+.ui-ws-explorer__pane--structure { flex: 1 1 58%; border-top: var(--border-width) solid var(--color-border-subtle); }
 .ui-ws-explorer__scroll { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-2) var(--space-1) var(--space-3); }
 
 /* V2 Explorer tree rows — lightweight (disclosure + label + optional leading
@@ -615,7 +615,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-preview { display: flex; flex-direction: column; min-height: 0; flex: 1; user-select: none; }
 /* Eos §3.5 ".toolbar" is 48px: space-2 (8px) vertical padding + the 32px
    control row below sums to the canonical 48px toolbar height. */
-.ui-preview__toolbar { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--color-border-default); }
+.ui-preview__toolbar { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--color-border-subtle); }
 .ui-preview__toolbar-row { display: flex; align-items: center; gap: var(--space-3); min-height: 32px; }
 .ui-preview__field { display: flex; align-items: center; min-width: 0; }
 /* Controls (MVT / audience / size) sit at the left of the single toolbar row as
@@ -700,7 +700,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-preview__empty-title { margin: 0; font-size: var(--type-label-md-size); line-height: var(--type-label-md-lh); font-weight: var(--fw-semibold); color: var(--color-text-secondary); }
 .ui-preview__empty-sub { margin: 0; font-size: var(--type-body-sm-size); line-height: 1.5; }
 .ui-preview__json { display: flex; flex-direction: column; min-height: 100%; text-align: left; }
-.ui-preview__json-head { position: sticky; top: 0; padding: var(--space-2) var(--space-3); font-size: var(--type-body-sm-size); color: var(--color-text-muted); background: var(--color-bg-surface); border-bottom: var(--border-width) solid var(--color-border-default); }
+.ui-preview__json-head { position: sticky; top: 0; padding: var(--space-2) var(--space-3); font-size: var(--type-body-sm-size); color: var(--color-text-muted); background: var(--color-bg-surface); border-bottom: var(--border-width) solid var(--color-border-subtle); }
 .ui-preview__json-body { margin: 0; padding: var(--space-3); font-family: var(--font-mono); font-size: var(--type-body-sm-size); line-height: 1.6; color: var(--color-text-primary); white-space: pre; }
 
 /* Widget preview — a selected saved offer rendered as a representative,
@@ -765,7 +765,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-ws-props__object .ui-ws-props__eyebrow { flex-basis: 100%; }
 .ui-ws-props__groups { display: flex; flex-direction: column; gap: var(--space-3); }
 .ui-ws-props__group { display: flex; flex-direction: column; gap: var(--space-3); }
-.ui-ws-props__group-header { margin: 0; font-size: var(--type-label-md-size); line-height: var(--type-label-md-lh); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semibold); color: var(--color-text-muted); padding-bottom: var(--space-1); border-bottom: var(--border-width) solid var(--color-border-default); }
+.ui-ws-props__group-header { margin: 0; font-size: var(--type-label-md-size); line-height: var(--type-label-md-lh); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semibold); color: var(--color-text-muted); padding-bottom: var(--space-1); border-bottom: var(--border-width) solid var(--color-border-subtle); }
 /* Expand all / Collapse all control above the collapsible property groups. */
 .ui-ws-props__collapse-all { display: flex; justify-content: flex-end; margin-bottom: var(--space-2); }
 /* Collapsible property groups reuse the shared .ui-section card. Scope a compact
@@ -836,7 +836,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
    same size as Visible — with hierarchy from weight and color, not extra
    sizes or a second family. */
 /* Pages: Slug (protect + hue sit in the slug cell) · Search Visibility · Un-Publish · Created · Modified · Actions */
-.ui-ws-browse__row { display: grid; grid-template-columns: minmax(0, 2.4fr) 1fr 1fr 1fr 1fr auto; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--color-border-default); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
+.ui-ws-browse__row { display: grid; grid-template-columns: minmax(0, 2.4fr) 1fr 1fr 1fr 1fr auto; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--color-border-subtle); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
 .ui-ws-browse__table--pages .ui-ws-browse__row { grid-template-columns: minmax(0, 2.4fr) 1fr 1fr 1fr 1fr auto; }
 /* Variants: Name · QA · Optimizely · Publish · Scheduled · Un-Published · Created · Modified · By · Actions */
 .ui-ws-browse__table--variants { overflow-x: auto; }
@@ -859,7 +859,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-ws-browse__table--content-pages .ui-ws-browse__row { grid-template-columns: minmax(0, 2.2fr) 1.2fr 0.7fr 1fr 1.2fr auto; }
 .ui-ws-browse__row:last-child { border-bottom: 0; }
 /* Inline-expanded children: a nested "Pages:" list under the open widget row. */
-.ui-ws-browse__widget-children { padding: var(--space-2) var(--space-3) var(--space-3) calc(var(--space-3) + var(--control-height-sm)); background: var(--color-bg-subtle); border-bottom: var(--border-width) solid var(--color-border-default); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
+.ui-ws-browse__widget-children { padding: var(--space-2) var(--space-3) var(--space-3) calc(var(--space-3) + var(--control-height-sm)); background: var(--color-bg-subtle); border-bottom: var(--border-width) solid var(--color-border-subtle); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
 .ui-ws-browse__widget-children-label { font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); font-weight: var(--fw-semibold); color: var(--color-text-muted); margin-bottom: var(--space-2); }
 .ui-ws-browse__widget-child { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) 0; min-width: 0; }
 .ui-ws-browse__widget-empty { font-size: var(--type-body-sm-size); color: var(--color-text-muted); font-style: italic; }
@@ -980,7 +980,7 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
   width: 100%;
   padding: var(--space-2) var(--space-3);
   border: 0;
-  border-bottom: var(--border-width) solid var(--color-border-default);
+  border-bottom: var(--border-width) solid var(--color-border-subtle);
   background: var(--color-bg-subtle);
   color: var(--color-text-secondary);
   font: inherit;

@@ -44,7 +44,7 @@ const NAV_GROUPS = [
 export function DesignSystem() {
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-[var(--color-bg-canvas)] text-foreground">
-      <header className="flex shrink-0 items-center gap-3 border-b border-border px-5 py-3">
+      <header className="flex shrink-0 items-center gap-3 border-b border-[var(--color-border-subtle)] px-5 py-3">
         <button
           type="button"
           onClick={() => navigate(routes.pages())}
@@ -59,7 +59,7 @@ export function DesignSystem() {
       <div className="grid min-h-0 flex-1 grid-cols-[220px_minmax(0,1fr)]">
         <nav
           aria-label="Design system sections"
-          className="shrink-0 border-r border-border bg-[var(--color-bg-panel)] px-3 py-4"
+          className="shrink-0 border-r border-[var(--color-border-subtle)] bg-[var(--color-bg-panel)] px-3 py-4"
         >
           <ol className="flex flex-col gap-4">
             {NAV_GROUPS.map((group) => (

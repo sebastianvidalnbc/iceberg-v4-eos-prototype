@@ -6,7 +6,7 @@ import type { StructureLabelWeight } from "@/v4-eos/ui/structure-tree-visual";
 
 const INDENT_PX = 12;
 const ROW_CLASS =
-  "structure-tree-row group/row relative flex cursor-pointer items-center gap-0.5 rounded-[var(--radius-field)] pr-2 font-[family-name:var(--font-sans)] text-[length:var(--structure-tree-size)] leading-[length:var(--structure-tree-lh)] transition-colors";
+  "structure-tree-row group/row relative flex cursor-pointer items-center gap-0.5 rounded-[var(--radius-sm)] pr-2 font-[family-name:var(--font-sans)] text-[length:var(--structure-tree-size)] leading-[length:var(--structure-tree-lh)] transition-colors";
 
 export interface StructureTreeRowProps {
   depth: number;
@@ -98,7 +98,7 @@ export function StructureTreeRow({
           "hover:bg-[var(--color-bg-hover)] [--row-bg:var(--color-bg-hover)]",
         selected &&
           !boxed &&
-          "bg-[var(--color-bg-selected)] [--row-bg:var(--color-bg-selected)] text-foreground shadow-[inset_3px_0_0_0_var(--color-action-primary)]",
+          "bg-[var(--color-bg-selected)] [--row-bg:var(--color-bg-selected)] text-foreground",
         selected && boxed && "text-foreground",
         isDragging && "opacity-40",
         isOver &&

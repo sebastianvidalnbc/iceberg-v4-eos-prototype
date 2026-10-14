@@ -174,7 +174,7 @@ export function LayoutPicker({
 
         {/* Two-pane body: searchable list + live preview. */}
         <div className="grid min-h-0 grid-cols-[300px_minmax(0,1fr)]">
-          <div className="flex min-h-0 flex-col border-r border-[var(--color-border-default)]">
+          <div className="flex min-h-0 flex-col border-r border-[var(--color-border-subtle)]">
             <div className="p-3">
               <SearchInput
                 value={query}

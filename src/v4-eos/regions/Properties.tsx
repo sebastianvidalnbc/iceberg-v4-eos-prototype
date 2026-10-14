@@ -778,7 +778,7 @@ function InlineFeatureCollections({
                     key={item.id}
                     className={cn(
                       i > 0 &&
-                        "mt-3 border-t border-[var(--color-border-default)] pt-3",
+                        "mt-3 border-t border-[var(--color-border-subtle)] pt-3",
                     )}
                   >
                     <InlineFeatureItem

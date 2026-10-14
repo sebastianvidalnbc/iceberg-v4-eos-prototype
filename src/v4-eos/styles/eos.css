@@ -256,7 +256,7 @@
   gap: var(--space-6);
   padding: 0 18px;
   background: var(--color-opshub);
-  border-bottom: var(--border-width) solid var(--color-border-default);
+  border-bottom: var(--border-width) solid var(--color-border-subtle);
   color: var(--color-opshub-fg);
 }
 .ui-topbar__brand { display: flex; align-items: center; gap: var(--space-3); flex: none; }
@@ -507,7 +507,7 @@
     width: 100%;
     max-height: 45vh;
     border-left: 0;
-    border-top: var(--border-width) solid var(--color-border-strong);
+    border-top: var(--border-width) solid var(--color-border-subtle);
   }
 }
 

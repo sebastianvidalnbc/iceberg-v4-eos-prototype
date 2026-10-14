@@ -525,12 +525,12 @@ function StructureTree({
 
   // Widget top-level nodes render as boxed tabs with ONE unified treatment
   // (Configurations and Content read as the same kind of unit): a quiet hairline
-  // at rest — no card fill inside the already-toned panel — lifting to the accent
-  // border + tinted fill only when the box is the current selection, so selection
+  // at rest — no card fill inside the already-toned panel — getting only the
+  // tinted fill (no accent stroke) when the box is the current selection, so selection
   // reads as "this box", not a layer/row inside it.
   const boxClass = (nodeId: string) =>
     nodeId === selectedId
-      ? "w-full rounded-[var(--radius-sm)] bg-[var(--color-bg-selected)] p-0.5 shadow-[inset_0_0_0_1px_var(--color-action-primary-border)]"
+      ? "w-full rounded-[var(--radius-sm)] bg-[var(--color-bg-selected)] p-0.5"
       : "w-full rounded-[var(--radius-sm)] p-0.5 transition-colors hover:bg-[var(--color-bg-hover)]";
 
   return (
