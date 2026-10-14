@@ -1,4 +1,8 @@
-import { useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { Panel, PanelHeader, SearchInput } from "@/v4-eos/ui/panel";
 import { chromeType } from "@/v4-eos/ui/chrome-type";
 import { cn } from "@/v4-eos/ui/lib/utils";
@@ -17,6 +21,12 @@ import {
   WIDGET_OFFER_FILTER_INDEX,
 } from "../data";
 import { classifyWidget, type WidgetType } from "../browse";
+import {
+  LAYOUT_TYPES,
+  layoutTypeForNode,
+  layoutWash,
+  type LayoutTypeId,
+} from "../layout-identity";
 
 // Type-family wayfinding inside the widget editor: only the widget-only grouping
 // nodes carry a family dot, so the cue can never leak into a Page's structure.
@@ -135,13 +145,38 @@ interface StructureActions {
 
 // A quiet, always-present insert point between top-level sections. Brightens on
 // hover/focus into a "+ Add layout" affordance — the page-builder entry point.
-function InsertLayoutBar({ onClick }: { onClick: () => void }) {
+// Between two layout regions the bar is the boundary: its centre line is where
+// the wash above meets the wash below (see .layout-boundary).
+function InsertLayoutBar({
+  onClick,
+  above,
+  below,
+}: {
+  onClick: () => void;
+  above?: LayoutTypeId;
+  below?: LayoutTypeId;
+}) {
+  const boundary = above || below;
+  const style = boundary
+    ? ({
+        "--boundary-above": above ? layoutWash(above) : "transparent",
+        "--boundary-below": below ? layoutWash(below) : "transparent",
+      } as CSSProperties)
+    : undefined;
   return (
-    <div className="group/ins flex items-center gap-2 px-3 py-1">
+    <div
+      className={cn("group/ins flex items-center gap-2 px-3 py-1", boundary && "layout-boundary")}
+      style={style}
+    >
       <button
         type="button"
         onClick={onClick}
-        className="inline-flex items-center gap-1 rounded-full border border-dashed border-[var(--color-border-strong)] px-2 py-0.5 text-[length:var(--type-label-md-size)] leading-[length:var(--type-label-md-lh)] font-medium text-muted-foreground transition-colors hover:border-[var(--color-action-primary)] hover:bg-[var(--color-action-primary-bg)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        className={cn(
+          "inline-flex items-center gap-1 rounded-full border border-dashed border-[var(--color-border-strong)] px-2 py-0.5 text-[length:var(--type-label-md-size)] leading-[length:var(--type-label-md-lh)] font-medium text-muted-foreground transition-colors hover:border-[var(--color-action-primary)] hover:bg-[var(--color-action-primary-bg)] hover:text-[var(--color-action-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+          // Opaque pill on a boundary: the gray line stops at the pill and the
+          // two layout washes meet exactly on the line.
+          boundary && "bg-[var(--color-bg-elevated)]",
+        )}
       >
         <MSym name="add" size={14} />
         Add layout
@@ -253,6 +288,10 @@ function StructureLevel({
         // Offers list is filtered (indices would not match).
         const childDragDisabled = (isOffers || isOfferGroup) && !!q;
         const visual = getStructureNodeVisual(node, { depth, index, parentId });
+        // Layout identity: a top-level page section is one layout region. The
+        // region wrapper below tints its whole subtree; nested rows inherit it.
+        const layoutType = depth === 0 ? layoutTypeForNode(node) : undefined;
+        const layoutDef = layoutType ? LAYOUT_TYPES[layoutType] : undefined;
         const grip = dragDisabled ? null : (
           <span
             {...drag.gripProps(index)}
@@ -265,130 +304,142 @@ function StructureLevel({
           </span>
         );
         return (
-          <div key={node.id}>
-            {visual.sectionBreak && (
+          <div key={node.id} className={isTopLevel && allowInsert ? "layout-gutter" : undefined}>
+            {visual.sectionBreak && !(isTopLevel && allowInsert) && (
               <div className="structure-tree-break" aria-hidden role="presentation" />
             )}
             {isTopLevel && allowInsert && (
               <InsertLayoutBar
+                above={index > 0 ? layoutTypeForNode(nodes[index - 1]) : undefined}
+                below={layoutType}
                 onClick={() =>
                   actions.onRequestAddLayout("before", node.id, node.label)
                 }
               />
             )}
-            <StructureTreeRow
-              depth={depth}
-              fluid
-              boxed={boxedTop}
-              noTrailingFade={noTrailingFade}
-              famType={famTypeForNode(node)}
-              hasChildren={hasChildren}
-              isOpen={isOpen}
-              selected={node.id === selectedId}
-              disabled={node.disabled}
-              icon={visual.icon}
-              labelWeight={visual.labelWeight}
-              grip={grip}
-              dropHandlers={dragDisabled ? undefined : drag.dropProps(index)}
-              isDragging={drag.isDragging(index)}
-              isOver={drag.isOver(index)}
-              label={
-                renamingId === node.id ? (
-                  <input
-                    autoFocus
-                    aria-label="Rename"
-                    className="w-full rounded-[var(--radius-field)] border border-input bg-background px-1.5 py-0.5 text-[length:var(--structure-tree-size)] leading-[length:var(--structure-tree-lh)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    onBlur={() => commitRename(node.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") commitRename(node.id);
-                      else if (e.key === "Escape") cancelRename();
-                    }}
-                  />
-                ) : node.badge ? (
-                  // Inline status pill after the label: an offer's "Live" flag
-                  // (§4) or a segment's Optimizely mapping state (§11).
-                  <span className="inline-flex items-center gap-1.5">
-                    <span>{node.label}</span>
-                    <span
-                      className={`ui-badge${node.badgeTone ? ` ui-badge--${node.badgeTone}` : ""}`}
-                      style={{ padding: "0 6px", fontSize: 10, lineHeight: "16px" }}
-                    >
-                      {node.badge}
-                    </span>
-                  </span>
-                ) : (
-                  node.label
-                )
-              }
-              trailing={
-                allowRowActions ? (
-                  <RowActionsMenu
-                    label={node.label}
-                    minimal={minimalRowActions}
-                    disabled={node.disabled}
-                    canPaste={actions.canPaste}
-                    onRename={() => startRename(node.id, node.label)}
-                    onDuplicate={() => actions.onDuplicateNode(node.id)}
-                    onCopy={() => actions.onCopyNode(node.id)}
-                    onPaste={() => actions.onPasteNode(node.id)}
-                    onToggleDisabled={() => actions.onToggleDisabledNode(node.id)}
-                    onDelete={() => actions.onDeleteNode(node.id)}
-                  />
-                ) : undefined
-              }
-              onSelect={() => onSelect(node.id)}
-              onToggle={() => onToggle(node.id)}
-            />
-            {isOffers && isOpen && (
-              <div
-                className="py-1 pr-2"
-                style={{
-                  paddingLeft: `calc(var(--structure-tree-pad-x) + ${(depth + 1) * 12}px + 20px)`,
-                }}
-              >
-                <SearchInput
-                  value={offerQuery}
-                  onChange={setOfferQuery}
-                  onClear={() => setOfferQuery("")}
-                  placeholder="Search offers…"
-                />
-              </div>
-            )}
-            {hasChildren && isOpen && (
-              <StructureLevel
-                nodes={kids}
-                parentId={node.id}
-                depth={depth + 1}
-                dragDisabled={childDragDisabled}
-                selectedId={selectedId}
-                expanded={expanded}
-                renamingId={renamingId}
-                draft={draft}
-                setDraft={setDraft}
-                startRename={startRename}
-                commitRename={commitRename}
-                cancelRename={cancelRename}
-                onSelect={onSelect}
-                onToggle={onToggle}
-                actions={actions}
-                offerQuery={offerQuery}
-                setOfferQuery={setOfferQuery}
-                allowInsert={allowInsert}
-                allowRowActions={allowRowActions}
-                minimalRowActions={minimalRowActions}
+            <div
+              className={layoutType ? "layout-region" : undefined}
+              data-layout-type={layoutType}
+              data-layout-label={layoutDef?.name.toUpperCase()}
+            >
+              <StructureTreeRow
+                depth={depth}
+                fluid
+                boxed={boxedTop}
                 noTrailingFade={noTrailingFade}
+                famType={famTypeForNode(node)}
+                hasChildren={hasChildren}
+                isOpen={isOpen}
+                selected={node.id === selectedId}
+                disabled={node.disabled}
+                icon={layoutDef ? layoutDef.icon : visual.icon}
+                layoutAccent={!!layoutDef}
+                labelWeight={visual.labelWeight}
+                grip={grip}
+                dropHandlers={dragDisabled ? undefined : drag.dropProps(index)}
+                isDragging={drag.isDragging(index)}
+                isOver={drag.isOver(index)}
+                label={
+                  renamingId === node.id ? (
+                    <input
+                      autoFocus
+                      aria-label="Rename"
+                      className="w-full rounded-[var(--radius-field)] border border-input bg-background px-1.5 py-0.5 text-[length:var(--structure-tree-size)] leading-[length:var(--structure-tree-lh)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)]"
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      onBlur={() => commitRename(node.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") commitRename(node.id);
+                        else if (e.key === "Escape") cancelRename();
+                      }}
+                    />
+                  ) : node.badge ? (
+                    // Inline status pill after the label: an offer's "Live" flag
+                    // (§4) or a segment's Optimizely mapping state (§11).
+                    <span className="inline-flex items-center gap-1.5">
+                      <span>{node.label}</span>
+                      <span
+                        className={`ui-badge${node.badgeTone ? ` ui-badge--${node.badgeTone}` : ""}`}
+                        style={{ padding: "0 6px", fontSize: 10, lineHeight: "16px" }}
+                      >
+                        {node.badge}
+                      </span>
+                    </span>
+                  ) : (
+                    node.label
+                  )
+                }
+                trailing={
+                  allowRowActions ? (
+                    <RowActionsMenu
+                      label={node.label}
+                      minimal={minimalRowActions}
+                      disabled={node.disabled}
+                      canPaste={actions.canPaste}
+                      onRename={() => startRename(node.id, node.label)}
+                      onDuplicate={() => actions.onDuplicateNode(node.id)}
+                      onCopy={() => actions.onCopyNode(node.id)}
+                      onPaste={() => actions.onPasteNode(node.id)}
+                      onToggleDisabled={() => actions.onToggleDisabledNode(node.id)}
+                      onDelete={() => actions.onDeleteNode(node.id)}
+                    />
+                  ) : undefined
+                }
+                onSelect={() => onSelect(node.id)}
+                onToggle={() => onToggle(node.id)}
               />
-            )}
+              {isOffers && isOpen && (
+                <div
+                  className="py-1 pr-2"
+                  style={{
+                    paddingLeft: `calc(var(--structure-tree-pad-x) + ${(depth + 1) * 12}px + 20px)`,
+                  }}
+                >
+                  <SearchInput
+                    value={offerQuery}
+                    onChange={setOfferQuery}
+                    onClear={() => setOfferQuery("")}
+                    placeholder="Search offers…"
+                  />
+                </div>
+              )}
+              {hasChildren && isOpen && (
+                <StructureLevel
+                  nodes={kids}
+                  parentId={node.id}
+                  depth={depth + 1}
+                  dragDisabled={childDragDisabled}
+                  selectedId={selectedId}
+                  expanded={expanded}
+                  renamingId={renamingId}
+                  draft={draft}
+                  setDraft={setDraft}
+                  startRename={startRename}
+                  commitRename={commitRename}
+                  cancelRename={cancelRename}
+                  onSelect={onSelect}
+                  onToggle={onToggle}
+                  actions={actions}
+                  offerQuery={offerQuery}
+                  setOfferQuery={setOfferQuery}
+                  allowInsert={allowInsert}
+                  allowRowActions={allowRowActions}
+                  minimalRowActions={minimalRowActions}
+                  noTrailingFade={noTrailingFade}
+                />
+              )}
+            </div>
           </div>
         );
       })}
       {isTopLevel && allowInsert && (
-        <InsertLayoutBar
-          onClick={() => actions.onRequestAddLayout("end", null)}
-        />
+        <div className="layout-gutter">
+          <InsertLayoutBar
+            above={nodes.length ? layoutTypeForNode(nodes[nodes.length - 1]) : undefined}
+            onClick={() => actions.onRequestAddLayout("end", null)}
+          />
+        </div>
       )}
     </>
   );
@@ -419,7 +470,7 @@ function StructureTabs({
       role="tab"
       aria-selected={active === id}
       onClick={() => onChange(id)}
-      className={`-mb-px shrink-0 border-b-2 px-3 py-2 text-[length:var(--type-body-md-size)] leading-[length:var(--type-body-md-lh)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+      className={`-mb-px shrink-0 border-b-2 px-3 py-2 text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
         active === id
           ? "border-[var(--color-action-primary)] font-medium text-foreground"
           : "border-transparent font-normal text-muted-foreground hover:text-foreground"
@@ -823,7 +874,7 @@ export function Explorer({
               }}
             />
           ) : (
-            <p className="m-3 text-[length:var(--type-body-md-size)] leading-relaxed text-muted-foreground">
+            <p className="m-3 text-[length:var(--type-body-sm-size)] leading-relaxed text-muted-foreground">
               Select a {structureEmptyNoun} to view its structure.
             </p>
           )}

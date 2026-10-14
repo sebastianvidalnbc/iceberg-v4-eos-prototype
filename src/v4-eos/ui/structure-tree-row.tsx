@@ -26,6 +26,8 @@ export interface StructureTreeRowProps {
   boxed?: boolean;
   noTrailingFade?: boolean;
   famType?: WidgetType;
+  /** Layout region header: colour the icon with the layout type's accent. */
+  layoutAccent?: boolean;
   /** Content Pages outline: reads as a fill-out section that opens Properties. */
   sectionEntry?: boolean;
   onSelect: () => void;
@@ -50,14 +52,23 @@ export function StructureTreeRow({
   boxed,
   noTrailingFade,
   famType,
+  layoutAccent,
   sectionEntry,
   onSelect,
   onToggle,
 }: StructureTreeRowProps) {
   const rowRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (selected) {
-      rowRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    const el = rowRef.current;
+    if (selected && el) {
+      // Reveal vertically only: a deep selected row must not pan the tree
+      // sideways, which would push the layout gutter out of view.
+      const scrollers: [HTMLElement, number][] = [];
+      for (let p = el.parentElement; p; p = p.parentElement) {
+        if (p.scrollWidth > p.clientWidth) scrollers.push([p, p.scrollLeft]);
+      }
+      el.scrollIntoView({ block: "nearest", inline: "nearest" });
+      for (const [s, x] of scrollers) s.scrollLeft = x;
     }
   }, [selected]);
 
@@ -138,7 +149,12 @@ export function StructureTreeRow({
       ) : icon ? (
         <span
           aria-hidden
-          className="flex size-5 shrink-0 items-center justify-center text-[var(--color-text-secondary)]"
+          className={cn(
+            "flex size-5 shrink-0 items-center justify-center",
+            layoutAccent
+              ? "text-[var(--layout-accent)]"
+              : "text-[var(--color-text-secondary)]",
+          )}
         >
           <MSym name={icon} size={16} />
         </span>
