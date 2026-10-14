@@ -3,7 +3,7 @@
    group. Expandable groups show a right chevron that rotates when open; items
    without sub-items show no chevron. Values match the
    boxed StructureTreeRow `sectionEntry` styling (36px rows, 12/8px padding,
-   4px radius, 14/20 type, 3px blue selection accent).
+   8px radius, 14/20 type; selection is a light blue fill with no accent bar).
    Markup and ARIA follow the WAI-ARIA tree pattern:
      root              .cp-tree-item                    li role="treeitem"
      content           .cp-tree-item__content           the boxed container
@@ -13,7 +13,12 @@
    State is read from ARIA attributes (aria-selected / aria-expanded). Scoped to
    the outline; the shared Structure tree is not affected. */
 
+/* Top-level rows carry a fixed icon slot, so every top-level label sits at
+   --cp-label-inset. Subitems indent 16px from that same edge. */
 .cp-tree {
+  --cp-icon-slot: 20px;
+  --cp-icon-gap: 2px;
+  --cp-label-inset: calc(var(--space-1) + var(--space-3) + var(--cp-icon-slot) + var(--cp-icon-gap));
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -35,11 +40,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--cp-icon-gap);
   min-height: 36px;
   margin: 0 var(--space-1);
   padding: 0 var(--space-2) 0 var(--space-3);
-  border-radius: var(--radius-field);
+  border-radius: var(--radius-sm);
   background: var(--color-bg-elevated);
   box-shadow: inset 0 0 0 1px var(--color-border-subtle);
   color: var(--color-text-primary);
@@ -89,8 +94,22 @@
   flex-direction: column;
   gap: 1px;
   margin: 0;
-  padding: 0 0 0 16px;
+  padding: 0 0 0 var(--cp-label-inset);
   list-style: none;
+}
+
+.cp-tree-item__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--cp-icon-slot);
+  height: var(--cp-icon-slot);
+  color: var(--color-text-muted);
+}
+
+.cp-tree-item[aria-selected="true"] > .cp-tree-item__content > .cp-tree-item__icon {
+  color: var(--color-text-primary);
 }
 
 /* Subitems are plain indented rows, not containers. Selection and focus below still apply. */
@@ -106,10 +125,21 @@
   box-shadow: none;
 }
 
+/* Thin divider between subitems, inset to the subitem label's left edge. */
+.cp-tree-item__group-transition > .cp-tree-item + .cp-tree-item > .cp-tree-item__content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--space-3);
+  right: var(--space-2);
+  height: 1px;
+  background: var(--color-border-subtle);
+  pointer-events: none;
+}
+
 /* Selection: only selectable items carry aria-selected; expandable-only groups never do. */
 .cp-tree-item[aria-selected="true"] > .cp-tree-item__content {
   background: var(--color-bg-selected);
-  box-shadow: inset 3px 0 0 0 var(--color-action-primary);
 }
 
 .cp-tree-item[aria-selected="true"] > .cp-tree-item__content > .cp-tree-item__label {
@@ -119,12 +149,6 @@
 /* Keyboard focus lives on the treeitem; ring is drawn on the container. */
 .cp-tree-item:focus-visible > .cp-tree-item__content {
   box-shadow: inset 0 0 0 2px var(--color-focus-ring);
-}
-
-.cp-tree-item[aria-selected="true"]:focus-visible > .cp-tree-item__content {
-  box-shadow:
-    inset 3px 0 0 0 var(--color-action-primary),
-    inset 0 0 0 2px var(--color-focus-ring);
 }
 
 @media (prefers-reduced-motion: reduce) {

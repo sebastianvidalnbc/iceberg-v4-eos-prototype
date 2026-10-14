@@ -246,7 +246,7 @@ function FaqAnswerGroup({
   onChange: (answer: ContentPageFaqAnswer) => void;
 }) {
   return (
-    <fieldset className="min-w-0 border-t border-[var(--color-border-default)] pt-2">
+    <fieldset className="min-w-0 border-t border-[var(--color-border-subtle)] pt-2">
       <legend
         className={`mx-[var(--inspector-pad-x)] inline-flex items-center gap-1 ${inspectorType.section}`}
       >

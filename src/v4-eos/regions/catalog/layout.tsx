@@ -19,7 +19,7 @@ export function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-4 border-t border-border pt-8 first:border-t-0 first:pt-0">
+    <section id={id} className="scroll-mt-4 border-t border-[var(--color-border-subtle)] pt-8 first:border-t-0 first:pt-0">
       <h2 className="text-[length:var(--type-title-lg-size)] leading-[length:var(--type-title-lg-lh)] font-semibold tracking-tight text-foreground">
         {title}
       </h2>

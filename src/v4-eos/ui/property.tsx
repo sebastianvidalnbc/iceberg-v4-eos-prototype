@@ -339,7 +339,7 @@ export function PropertySection({
     <Collapsible
       open={expanded}
       onOpenChange={onToggle}
-      className={cn("min-w-0 py-1", borderedTop && "border-t border-[var(--color-border-default)] pt-2")}
+      className={cn("min-w-0 py-1", borderedTop && "border-t border-[var(--color-border-subtle)] pt-2")}
     >
       <div className="flex items-center gap-1">
         <CollapsibleTrigger className="group flex h-8 min-w-0 flex-1 items-center gap-2 rounded-sm px-[var(--inspector-pad-x)] text-left transition-colors hover:bg-[var(--color-bg-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-focus-ring)]">

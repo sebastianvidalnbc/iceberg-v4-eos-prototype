@@ -137,6 +137,11 @@ export function ContentPageOutline({
             className="cp-tree-item__content"
             onClick={() => (selectable ? onSelect(node.id) : toggle(node.id))}
           >
+            {depth === 0 && node.icon && (
+              <span aria-hidden className="cp-tree-item__icon">
+                <MSym name={node.icon} size={16} />
+              </span>
+            )}
             <span id={labelId} className="cp-tree-item__label">
               {node.label}
             </span>

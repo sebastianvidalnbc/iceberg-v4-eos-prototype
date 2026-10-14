@@ -604,10 +604,10 @@ Content Pages outline (`regions/ContentPageOutline.tsx`, `regions/content-page-o
 is a boxed WAI-ARIA tree following the MUI X Tree Item slot anatomy
 (`cp-tree-item` root, `__content`, `__icon-container`, `__label`, `__trailing`,
 `__group-transition`), styled in plain CSS over Eos tokens. It does not use
-`StructureTreeRow`. Each item is a white container (36px minimum, 4px radius,
-1px subtle inset border) with 4px between containers. Labels are 14/20: top-level
+`StructureTreeRow`. Each item is a white container (36px minimum, 8px radius
+(`--radius-sm`, same as the Widgets tab boxes), 1px subtle inset border) with 1px between containers. Labels are 14/20: top-level
 medium, nested regular. Hover uses `--color-bg-hover`. Selection uses
-`--color-bg-selected` and a 3px blue accent. Only selectable items get
+`--color-bg-selected` (no accent bar). Only selectable items get
 `aria-selected`. Memberships, Texts, and Translation Copy are expandable-only
 groups with a left chevron that rotates when open. Selectable items show a right
 chevron. Nested items are inset 32px. Keyboard follows the tree pattern (roving
