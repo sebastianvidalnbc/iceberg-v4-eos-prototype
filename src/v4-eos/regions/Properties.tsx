@@ -14,7 +14,6 @@ import {
   RadioField,
 } from "@/v4-eos/ui/form-controls";
 import {
-  CompactPropertyRow,
   InspectorBody,
   InspectorCallout,
   InspectorHeader,
@@ -149,6 +148,7 @@ function PropertyControl({
         onValueChange={onEdit}
         options={field.options ?? []}
         invalid={invalid}
+        polished
       />
     );
   }
@@ -346,13 +346,6 @@ function FieldLabel({ label, tooltip }: { label: string; tooltip?: string }) {
   );
 }
 
-function fieldUsesCompactRow(field: PropertyField): boolean {
-  if (field.badge || field.kind === "switch" || field.kind === "checkbox") return false;
-  if (field.kind === "textarea" || field.kind === "asset" || field.kind === "radio") return false;
-  if (field.helper) return false;
-  return field.kind === "select" || field.kind === "text" || field.kind === undefined;
-}
-
 // Stacked fields, compact rows, or list rows (switch/checkbox/badge).
 function PropertyFieldRow({
   field,
@@ -443,19 +436,6 @@ function PropertyFieldRow({
       invalid={invalid}
     />
   );
-
-  if (fieldUsesCompactRow(field)) {
-    return (
-      <CompactPropertyRow
-        label={label}
-        htmlFor={id}
-        required={field.required}
-        help={help}
-      >
-        {control}
-      </CompactPropertyRow>
-    );
-  }
 
   return (
     <PropRow label={label} htmlFor={id} required={field.required} help={help}>
