@@ -43,11 +43,28 @@ function sampleDate(id: string, salt: number): string {
   return `${month} ${day} 26`;
 }
 
-// A fake but stable relative "modified" string.
+// A fake but stable relative "modified" string, with the age it stands for so
+// the table can sort on it.
+const MODIFIED_AGO = [
+  { label: "3 hours ago", hours: 3 },
+  { label: "3 days ago", hours: 72 },
+  { label: "12 days ago", hours: 288 },
+  { label: "a month ago", hours: 720 },
+];
+const SAMPLE_NOW = Date.UTC(2026, 9, 15, 18);
+
+function sampleModifiedAgo(id: string) {
+  return MODIFIED_AGO[hash(id + "mod") % MODIFIED_AGO.length];
+}
+
 function sampleModified(id: string): string {
-  const h = hash(id + "mod");
-  const opts = ["3 hours ago", "3 days ago", "12 days ago", "a month ago"];
-  return opts[h % opts.length];
+  return sampleModifiedAgo(id).label;
+}
+
+// Timestamp for a "MMM DD 26" sample date (sort key only).
+function sampleDateTs(s: string): number {
+  const [m, d] = s.split(" ");
+  return Date.UTC(2026, MONTHS.indexOf(m), Number(d));
 }
 
 export type PageStatus = "Draft" | "Published";
@@ -63,6 +80,8 @@ export interface SlugRow {
   depth: number;
   /** Depth-0 ancestor id — shared by a folder and the rows grouped under it. */
   groupId: string;
+  /** Direct parent page id, or null for top-level rows. */
+  parentId: string | null;
   hasChildren: boolean;
   childCount: number;
   variantCount: number;
@@ -73,6 +92,10 @@ export interface SlugRow {
   unpublishDate: string | null;
   created: string;
   modified: string;
+  /** Sort keys (ms since epoch) for the date columns; null when shown as "—". */
+  unpublishAt: number | null;
+  createdAt: number | null;
+  modifiedAt: number | null;
 }
 
 function variantChildCount(node: TreeNode): number {
@@ -83,23 +106,29 @@ function pageChildCount(node: TreeNode): number {
   return (node.children ?? []).filter((c) => c.type !== "variant").length;
 }
 
-function toSlugRow(node: TreeNode, depth: number, groupId: string): SlugRow {
+function toSlugRow(node: TreeNode, depth: number, groupId: string, parentId: string | null): SlugRow {
   const variantCount = variantChildCount(node);
   const h = hash(node.id);
+  const hasCreated = variantCount > 0 || h % 2 === 0;
+  const unpublishDate = h % 5 === 0 ? sampleDate(node.id, 7) : null;
   return {
     id: node.id,
     slug: node.label,
     depth,
     groupId,
+    parentId,
     hasChildren: pageChildCount(node) > 0,
     childCount: pageChildCount(node),
     variantCount,
     status: variantCount > 0 || h % 3 === 0 ? "Published" : "Draft",
     protect: h % 3 === 0,
     visibility: h % 4 === 0 ? "Hidden" : "Visible",
-    unpublishDate: h % 5 === 0 ? sampleDate(node.id, 7) : null,
-    created: variantCount > 0 || h % 2 === 0 ? sampleDate(node.id, 1) : "—",
-    modified: variantCount > 0 || h % 2 === 0 ? sampleModified(node.id) : "—",
+    unpublishDate,
+    created: hasCreated ? sampleDate(node.id, 1) : "—",
+    modified: hasCreated ? sampleModified(node.id) : "—",
+    unpublishAt: unpublishDate ? sampleDateTs(unpublishDate) : null,
+    createdAt: hasCreated ? sampleDateTs(sampleDate(node.id, 1)) : null,
+    modifiedAt: hasCreated ? SAMPLE_NOW - sampleModifiedAgo(node.id).hours * 3600_000 : null,
   };
 }
 
@@ -108,15 +137,15 @@ function toSlugRow(node: TreeNode, depth: number, groupId: string): SlugRow {
 // Defaults to the Pages tree so existing callers are unaffected.
 export function buildSlugRows(context: BrowseContext = "page"): SlugRow[] {
   const rows: SlugRow[] = [];
-  const walk = (nodes: TreeNode[], depth: number, groupId: string) => {
+  const walk = (nodes: TreeNode[], depth: number, groupId: string, parentId: string | null) => {
     for (const node of nodes) {
       if (node.type === "variant") continue;
       const gid = depth === 0 ? node.id : groupId;
-      rows.push(toSlugRow(node, depth, gid));
-      if (node.children) walk(node.children, depth + 1, gid);
+      rows.push(toSlugRow(node, depth, gid, parentId));
+      if (node.children) walk(node.children, depth + 1, gid, node.id);
     }
   };
-  walk(treeFor(context), 0, "");
+  walk(treeFor(context), 0, "", null);
   return rows;
 }
 
@@ -325,6 +354,9 @@ export interface WidgetRow {
   widgetName: string;
   created: string;
   modified: string;
+  /** Sort keys (ms since epoch) for the date columns. */
+  createdAt: number;
+  modifiedAt: number;
   children: WidgetChildRow[];
 }
 
@@ -370,6 +402,8 @@ export function buildWidgetRows(): WidgetRow[] {
       widgetName: widgetDisplayName(node.label),
       created: sampleDate(node.id, 1),
       modified: sampleModified(node.id),
+      createdAt: sampleDateTs(sampleDate(node.id, 1)),
+      modifiedAt: SAMPLE_NOW - sampleModifiedAgo(node.id).hours * 3600_000,
       children,
     };
   });

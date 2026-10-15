@@ -19,6 +19,29 @@ import {
   type GroupSwatch,
 } from "../browse";
 import { BrowseGroupHeader, useGroupHues } from "../ui-lib/BrowseGroupHeader";
+import { SortHeaderCell, compareSortValues, nextSort, type SortState } from "../ui-lib/SortableHeader";
+
+type SortKey = "slug" | "widgetName" | "createdAt" | "modifiedAt";
+
+const SORT_HEADERS: { key: SortKey; label: string }[] = [
+  { key: "slug", label: "Slug" },
+  { key: "widgetName", label: "Name" },
+  { key: "createdAt", label: "Created" },
+  { key: "modifiedAt", label: "Modified" },
+];
+
+function sortValue(row: WidgetRow, key: SortKey): string | number {
+  switch (key) {
+    case "slug":
+      return row.slug;
+    case "widgetName":
+      return row.widgetName;
+    case "createdAt":
+      return row.createdAt;
+    case "modifiedAt":
+      return row.modifiedAt;
+  }
+}
 
 // Widgets list — a SINGLE list, now organised by widget Type so 20+ mixed
 // widgets stay scannable (Figma 488:8901: CardHeader → Toolbar → Filters →
@@ -34,6 +57,8 @@ export function WidgetsView() {
   const [typeFilter, setTypeFilter] = useState<"all" | WidgetType>("all");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [sort, setSort] = useState<SortState<SortKey>>({ key: "modifiedAt", dir: "asc" });
+  const onSort = (key: SortKey) => setSort((prev) => nextSort(prev, key));
   // Single-open accordion: the id of the currently expanded widget, or null.
   const [openId, setOpenId] = useState<string | null>(null);
   // Per-Type collapse memory for the group section headers.
@@ -62,13 +87,20 @@ export function WidgetsView() {
   const effectiveFilter =
     typeFilter !== "all" && !typeCounts[typeFilter] ? "all" : typeFilter;
 
-  const filtered =
-    effectiveFilter === "all"
-      ? searched
-      : searched.filter((r) => r.type === effectiveFilter);
+  const filtered = useMemo(() => {
+    const base =
+      effectiveFilter === "all"
+        ? searched
+        : searched.filter((r) => r.type === effectiveFilter);
+    // Sorting happens before paging so each page is a slice of the full order.
+    // Groups are formed from the page, so each type keeps this relative order.
+    return [...base].sort((a, b) =>
+      compareSortValues(sortValue(a, sort.key), sortValue(b, sort.key), sort.dir),
+    );
+  }, [searched, effectiveFilter, sort]);
 
   // Reset to page 1 whenever the visible row set changes shape.
-  useEffect(() => setPage(0), [q, effectiveFilter, pageSize]);
+  useEffect(() => setPage(0), [q, effectiveFilter, pageSize, sort]);
 
   const pageRows = filtered.slice(page * pageSize, page * pageSize + pageSize);
   const groups = groupWidgetRows(pageRows);
@@ -131,10 +163,9 @@ export function WidgetsView() {
 
       <div className="ui-ws-browse__table ui-ws-browse__table--widgets" role="table" aria-label="Widgets">
         <div className="ui-ws-browse__row ui-ws-browse__row--head" role="row">
-          <span role="columnheader">Slug</span>
-          <span role="columnheader">Name</span>
-          <span role="columnheader">Created</span>
-          <span role="columnheader">Modified</span>
+          {SORT_HEADERS.map((h) => (
+            <SortHeaderCell key={h.key} sortKey={h.key} label={h.label} sort={sort} onSort={onSort} />
+          ))}
           <span role="columnheader" aria-label="Actions" />
         </div>
 
