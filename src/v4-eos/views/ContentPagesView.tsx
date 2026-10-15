@@ -120,8 +120,8 @@ export function ContentPagesView() {
           <span role="columnheader">Template</span>
           <span role="columnheader">Territory</span>
           <span role="columnheader">Locale</span>
-          <span role="columnheader">Modified</span>
           <span role="columnheader">By</span>
+          <span role="columnheader">Modified</span>
           <span role="columnheader" aria-label="Actions" />
         </div>
 
@@ -155,8 +155,7 @@ function ContentPageRow({ row }: { row: ContentPageRecord }) {
   const open = () => navigate(routes.contentPage(row.id));
   return (
     <div className="ui-ws-browse__row" role="row">
-      <span className="ui-ws-browse__slug ui-ws-browse__primary" role="cell">
-        <span className="ui-ws-browse__chevron-spacer" aria-hidden="true" />
+      <span className="ui-ws-browse__slug ui-ws-browse__slug--flush ui-ws-browse__primary" role="cell">
         <Badge variant={row.status === "Published" ? "success" : "default"}>
           {row.status}
         </Badge>
@@ -170,10 +169,10 @@ function ContentPageRow({ row }: { row: ContentPageRecord }) {
         {row.locale}
       </span>
       <span role="cell" className="ui-ws-browse__muted">
-        {row.modified}
+        {row.editedBy}
       </span>
       <span role="cell" className="ui-ws-browse__muted">
-        {row.editedBy}
+        {row.modified}
       </span>
       <span role="cell" className="ui-ws-browse__actions">
         <IconButton icon="eye" aria-label="Preview" size="sm" onClick={open} />

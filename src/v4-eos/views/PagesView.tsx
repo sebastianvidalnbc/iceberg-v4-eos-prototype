@@ -17,8 +17,62 @@ import {
   type SlugRow,
 } from "../browse";
 import { BrowseGroupHeader, useGroupHues } from "../ui-lib/BrowseGroupHeader";
+import { SortHeaderCell, compareSortValues, nextSort, type SortState } from "../ui-lib/SortableHeader";
 
 type VisibilityFilter = "all" | "Visible" | "Hidden";
+
+type SortKey = "slug" | "visibility" | "unpublishAt" | "createdAt" | "modifiedAt";
+
+const SORT_HEADERS: { key: SortKey; label: string }[] = [
+  { key: "slug", label: "Slug" },
+  { key: "visibility", label: "Search Visibility" },
+  { key: "unpublishAt", label: "Un-Publish Date" },
+  { key: "createdAt", label: "Created" },
+  { key: "modifiedAt", label: "Modified" },
+];
+
+function sortValue(row: SlugRow, key: SortKey): string | number | null {
+  switch (key) {
+    case "slug":
+      return row.slug;
+    case "visibility":
+      return row.visibility;
+    case "unpublishAt":
+      return row.unpublishAt;
+    case "createdAt":
+      return row.createdAt;
+    case "modifiedAt":
+      return row.modifiedAt;
+  }
+}
+
+function compareRows(a: SlugRow, b: SlugRow, sort: SortState<SortKey>): number {
+  return compareSortValues(sortValue(a, sort.key), sortValue(b, sort.key), sort.dir);
+}
+
+// Sorts sibling rows within each parent so the tree stays intact. Top-level
+// groups keep their order (a group header shows no column data of its own).
+// In flat mode (search or filter active) the whole list is sorted.
+function orderRows(allRows: SlugRow[], sort: SortState<SortKey>, flat: boolean): SlugRow[] {
+  if (flat) return [...allRows].sort((a, b) => compareRows(a, b, sort));
+  const childrenOf = new Map<string, SlugRow[]>();
+  const top: SlugRow[] = [];
+  for (const r of allRows) {
+    if (r.parentId === null) {
+      top.push(r);
+    } else {
+      childrenOf.set(r.parentId, [...(childrenOf.get(r.parentId) ?? []), r]);
+    }
+  }
+  const out: SlugRow[] = [];
+  const emit = (r: SlugRow) => {
+    out.push(r);
+    const kids = childrenOf.get(r.id);
+    if (kids) [...kids].sort((a, b) => compareRows(a, b, sort)).forEach(emit);
+  };
+  top.forEach(emit);
+  return out;
+}
 
 // Pages list — the top browse level, mirroring real Iceberg's Pages table
 // (Figma 488:8901: CardHeader → Toolbar → Filters → Table → TableFooter).
@@ -40,6 +94,8 @@ export function PagesView() {
   const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [sort, setSort] = useState<SortState<SortKey>>({ key: "modifiedAt", dir: "asc" });
+  const onSort = (key: SortKey) => setSort((prev) => nextSort(prev, key));
   // Locally track which slugs are expanded (top-level rows collapsed by default,
   // except those already expanded in the sample tree cannot be known here, so we
   // start with all depth-0 rows expanded to reveal the nested structure).
@@ -63,24 +119,25 @@ export function PagesView() {
   const flatMode = q !== "" || visibilityFilter !== "all";
   const rows = useMemo(() => {
     if (flatMode) {
-      return allRows.filter((r) => {
+      const matches = allRows.filter((r) => {
         if (q && !r.slug.toLowerCase().includes(q)) return false;
         if (visibilityFilter !== "all" && r.visibility !== visibilityFilter) return false;
         return true;
       });
+      return orderRows(matches, sort, true);
     }
     const out: SlugRow[] = [];
     let hiddenBelow = Infinity;
-    for (const r of allRows) {
+    for (const r of orderRows(allRows, sort, false)) {
       if (r.depth > hiddenBelow) continue;
       out.push(r);
       hiddenBelow = r.hasChildren && !expanded.has(r.id) ? r.depth : Infinity;
     }
     return out;
-  }, [allRows, expanded, q, visibilityFilter, flatMode]);
+  }, [allRows, expanded, q, visibilityFilter, flatMode, sort]);
 
   // Reset to page 1 whenever the visible row set changes shape.
-  useEffect(() => setPage(0), [q, visibilityFilter, pageSize]);
+  useEffect(() => setPage(0), [q, visibilityFilter, pageSize, sort]);
 
   const pageRows = rows.slice(page * pageSize, page * pageSize + pageSize);
 
@@ -131,11 +188,9 @@ export function PagesView() {
 
       <div className="ui-ws-browse__table ui-ws-browse__table--pages" role="table" aria-label="Pages">
         <div className="ui-ws-browse__row ui-ws-browse__row--head" role="row">
-          <span role="columnheader">Slug</span>
-          <span role="columnheader">Search Visibility</span>
-          <span role="columnheader">Un-Publish Date</span>
-          <span role="columnheader">Created</span>
-          <span role="columnheader">Modified</span>
+          {SORT_HEADERS.map((h) => (
+            <SortHeaderCell key={h.key} sortKey={h.key} label={h.label} sort={sort} onSort={onSort} />
+          ))}
           <span role="columnheader" aria-label="Actions" />
         </div>
 

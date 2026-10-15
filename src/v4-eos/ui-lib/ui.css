@@ -836,8 +836,29 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
    same size as Visible — with hierarchy from weight and color, not extra
    sizes or a second family. */
 /* Pages: Slug (protect + hue sit in the slug cell) · Search Visibility · Un-Publish · Created · Modified · Actions */
-.ui-ws-browse__row { display: grid; grid-template-columns: minmax(0, 2.4fr) 1fr 1fr 1fr 1fr auto; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--color-border-subtle); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
-.ui-ws-browse__table--pages .ui-ws-browse__row { grid-template-columns: minmax(0, 2.4fr) 1fr 1fr 1fr 1fr auto; }
+/* Shared column grid for the top-level lists (Pages, Widgets, Content Pages).
+   Track 1 = Slug/Template; tracks 2-5 are the same four data columns in every
+   table so the same column (e.g. Created, Modified) sits at the same x; track 6
+   = Actions (fixed, so the header and body rows always agree). Widgets spans its
+   Name over tracks 2-3; Content Pages puts By in track 4 to keep Modified in 5. */
+.ui-ws-browse__table {
+  --browse-chevron-w: var(--control-height-sm);
+  --browse-marker-w: 68px;
+  --browse-status-w: 84px;
+  --browse-actions-w: 160px;
+  /* Slug track never shrinks below chevron + markers + status + a 240px link, so the
+     longest slug (e.g. /content-pages-plan-picker-with-select) is never cut. Data tracks keep a
+     96px floor. Below the total minimum the table scrolls sideways instead. */
+  --browse-slug-min: calc(var(--browse-chevron-w) + var(--browse-marker-w) + var(--browse-status-w) + 240px);
+  --browse-data-min: 96px;
+  --browse-cols: minmax(var(--browse-slug-min), 3fr) repeat(4, minmax(var(--browse-data-min), 1fr)) var(--browse-actions-w);
+  --browse-row-min: calc(var(--browse-slug-min) + 4 * var(--browse-data-min) + var(--browse-actions-w) + 5 * var(--space-3) + 2 * var(--space-3));
+  overflow-x: auto;
+}
+.ui-ws-browse__table--pages .ui-ws-browse__row,
+.ui-ws-browse__table--widgets .ui-ws-browse__row,
+.ui-ws-browse__table--content-pages .ui-ws-browse__row { min-width: var(--browse-row-min); }
+.ui-ws-browse__row { display: grid; grid-template-columns: var(--browse-cols); align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-bottom: var(--border-width) solid var(--color-border-subtle); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
 /* Variants: Name · QA · Optimizely · Publish · Scheduled · Un-Published · Created · Modified · By · Actions */
 .ui-ws-browse__table--variants { overflow-x: auto; }
 .ui-ws-browse__table--variants .ui-ws-browse__row {
@@ -853,10 +874,8 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
     minmax(7rem, 1fr)
     auto;
 }
-/* Widgets: Slug (format sits in the slug cell) · Name · Created · Modified · Actions */
-.ui-ws-browse__table--widgets .ui-ws-browse__row--widgets,
-.ui-ws-browse__table--widgets .ui-ws-browse__row--head { grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.6fr) 1fr 1fr auto; }
-.ui-ws-browse__table--content-pages .ui-ws-browse__row { grid-template-columns: minmax(0, 2.2fr) 1.2fr 0.7fr 1fr 1.2fr auto; }
+/* Widgets: Slug (format sits in the markers slot) · Name (tracks 2-3) · Created · Modified · Actions */
+.ui-ws-browse__table--widgets .ui-ws-browse__row > :nth-child(2) { grid-column: span 2; }
 .ui-ws-browse__row:last-child { border-bottom: 0; }
 /* Inline-expanded children: a nested "Pages:" list under the open widget row. */
 .ui-ws-browse__widget-children { padding: var(--space-2) var(--space-3) var(--space-3) calc(var(--space-3) + var(--control-height-sm)); background: var(--color-bg-subtle); border-bottom: var(--border-width) solid var(--color-border-subtle); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); }
@@ -865,16 +884,43 @@ button.ui-ws-nav__brand--link:focus-visible { outline: none; box-shadow: var(--f
 .ui-ws-browse__widget-empty { font-size: var(--type-body-sm-size); color: var(--color-text-muted); font-style: italic; }
 /* Column headers are UI labels, not table content -> Label Medium (12/16). */
 .ui-ws-browse__row--head { position: sticky; top: 0; background: var(--color-bg-subtle); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-lh); font-weight: var(--fw-medium); color: var(--color-text-muted); }
-.ui-ws-browse__row--head > * { white-space: nowrap; }
+.ui-ws-browse__row--head > * { white-space: nowrap; text-align: left; justify-self: stretch; }
+/* Sortable column headers: plain text buttons; the arrow slot keeps a fixed width so
+   toggling the sort never shifts the label. */
+.ui-ws-browse__sort { display: inline-flex; align-items: center; gap: var(--space-1); padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.ui-ws-browse__sort:hover,
+.ui-ws-browse__sort.is-active { color: var(--color-text-primary); }
+.ui-ws-browse__sort:focus-visible { outline: 2px solid var(--color-action-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+.ui-ws-browse__sort-arrow { display: inline-block; width: 1em; text-align: center; }
 .ui-ws-browse__row:not(.ui-ws-browse__row--head):hover { background: var(--color-bg-hover); }
-.ui-ws-browse__slug { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+/* Primary cell: chevron slot · markers slot (family dot + shield/format) · status
+   pill slot · name. Fixed slots keep pills, names, dots and shields in one column
+   across Pages, Widgets and Content Pages. */
+.ui-ws-browse__slug {
+  display: grid;
+  grid-template-columns: var(--browse-chevron-w) var(--browse-marker-w) var(--browse-status-w) minmax(0, 1fr);
+  align-items: center;
+  min-width: 0;
+}
+.ui-ws-browse__slug > .ui-badge { justify-self: start; }
+/* Content Pages has no chevron or family marker, so the status pill starts at the left edge. */
+.ui-ws-browse__slug--flush { grid-template-columns: var(--browse-status-w) minmax(0, 1fr); }
+.ui-ws-browse__slug > .ui-ws-browse__markers { justify-self: start; }
 .ui-ws-browse__chevron-spacer { width: var(--control-height-sm); flex: none; }
-.ui-ws-browse__slug-link { display: inline-flex; align-items: baseline; gap: var(--space-2); border: 0; background: none; padding: 0; font: inherit; color: var(--color-action-primary); font-weight: var(--fw-semibold); cursor: pointer; text-align: left; min-width: 0; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ui-ws-browse__slug-link { display: block; border: 0; background: none; padding: 0; font: inherit; color: var(--color-action-primary); font-weight: var(--fw-semibold); cursor: pointer; text-align: left; min-width: 0; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .ui-ws-browse__slug-link:hover { text-decoration: underline; }
 .ui-ws-browse__slug-link:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
 .ui-ws-browse__slug-text { font-family: inherit; font-size: inherit; line-height: inherit; font-weight: var(--fw-medium); color: var(--color-text-primary); }
-.ui-ws-browse__slug-count { font-size: inherit; line-height: inherit; color: var(--color-text-muted); font-weight: 400; }
+.ui-ws-browse__slug-count { font-size: inherit; line-height: inherit; color: var(--color-text-muted); font-weight: 400; margin-left: var(--space-2); }
 .ui-ws-browse__muted { color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+/* Data cells never wrap: one line each, so every row keeps the same height and
+   long values truncate instead of pushing the next column out of line. */
+.ui-ws-browse__row > [role="cell"]:not(.ui-ws-browse__slug):not(.ui-ws-browse__actions) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .ui-ws-browse__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-primary); }
 .ui-ws-browse__markers {
   display: inline-flex;
