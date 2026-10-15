@@ -48,17 +48,25 @@ const nt = (
     : {}),
 });
 
+// Top-level Sections get the same objectType + role as the canonical 0609 so the
+// Structure Explorer draws their layout region (colour, side label, gutter).
+const section = (node: StructureNode, role: SectionRole): StructureNode => ({
+  ...node,
+  objectType: "page-section",
+  role,
+});
+
 // --- Spanish voucher error message ------------------------------------------
 const spanishStructure: StructureNode[] = [
-  n("sv-title", "Title"),
-  n("sv-voucher-error", "Voucher Error"),
-  n("sv-legal", "Legal"),
+  section(n("sv-title", "Title"), "Page Title"),
+  section(n("sv-voucher-error", "Voucher Error"), "Voucher Error"),
+  section(n("sv-legal", "Legal"), "Footer"),
 ];
 
 // --- Testing disclaimer 2 ---------------------------------------------------
 const disclaimerStructure: StructureNode[] = [
-  n("td-title", "Title"),
-  n("td-card", "Premium card first test", [
+  section(n("td-title", "Title"), "Page Title"),
+  section(n("td-card", "Premium card first test", [
     n("td-section-content", "Section Content", [
       n("td-control", "Control", [
         n("td-variant-categories", "Variant Categories", [
@@ -68,14 +76,14 @@ const disclaimerStructure: StructureNode[] = [
     ]),
     n("td-section-options", "Section Options", []),
     n("td-disclaimer", "Disclaimer"),
-  ]),
-  n("td-legal", "Legal"),
+  ]), "Plan Picker"),
+  section(n("td-legal", "Legal"), "Footer"),
 ];
 
 // --- Annual Select Update ---------------------------------------------------
 const annualStructure: StructureNode[] = [
-  n("as-title", "Title"),
-  n("as-plan-picker", "Plan Picker", [
+  section(n("as-title", "Title"), "Page Title"),
+  section(n("as-plan-picker", "Plan Picker", [
     n("as-section-content", "Section Content", [
       n("as-control", "Control", [
         n("as-variant-categories", "Variant Categories", [
@@ -89,8 +97,8 @@ const annualStructure: StructureNode[] = [
       ]),
     ]),
     n("as-section-options", "Section Options", []),
-  ]),
-  n("as-legal", "Legal"),
+  ]), "Plan Picker"),
+  section(n("as-legal", "Legal"), "Footer"),
 ];
 
 // --- 0609 premium card test 2 (the canonical, architect-aligned sample) -----
@@ -206,8 +214,8 @@ const premiumCardStructure: StructureNode[] = [
 
 // --- Premium_Test__2 --------------------------------------------------------
 const premiumTest2Structure: StructureNode[] = [
-  n("pt-title", "Title"),
-  n("pt-plan-picker", "Premium Plan Picker", [
+  section(n("pt-title", "Title"), "Page Title"),
+  section(n("pt-plan-picker", "Premium Plan Picker", [
     n("pt-section-content", "Section Content", [
       n("pt-control", "Control", [
         n("pt-variant-categories", "Variant Categories", [
@@ -221,8 +229,8 @@ const premiumTest2Structure: StructureNode[] = [
       ]),
     ]),
     n("pt-section-options", "Section Options", []),
-  ]),
-  n("pt-faq", "FAQ"),
+  ]), "Plan Picker"),
+  section(n("pt-faq", "FAQ"), "FAQ's"),
 ];
 
 export const VARIANT_STRUCTURES: Record<string, StructureNode[]> = {

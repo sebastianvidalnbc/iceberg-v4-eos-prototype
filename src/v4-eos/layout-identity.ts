@@ -64,6 +64,7 @@ export function layoutTypeOf(def: LayoutDef): LayoutTypeId {
 const ROLE_TYPE: Record<string, LayoutTypeId> = {
   "Page Title": "hero",
   "Plan Picker": "plan-picker",
+  "Voucher Error": "content",
   Footer: "footer",
 };
 
