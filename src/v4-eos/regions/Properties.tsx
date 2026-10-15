@@ -841,7 +841,11 @@ export function Properties({
       aria-label="Properties"
       className="ui-ws__region w-[var(--ws-properties-w)] max-w-full bg-[var(--color-bg-panel)] text-foreground"
     >
-      <ScrollArea className="min-h-0 flex-1">
+      {/* The viewport's inner wrapper is display:table (Radix default), which
+          grows to fit the longest unbroken label (e.g. a long dropdown value) and
+          pushes the panel past the window. Force it to a block so the body stays
+          exactly the panel's width; long values truncate inside their controls. */}
+      <ScrollArea className="min-h-0 flex-1" viewportClassName="[&>div]:!block">
         <InspectorBody>
           {variant && selectedStructureNodeId ? (
             <PropertiesBody
