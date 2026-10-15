@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Panel } from "@/v4-eos/ui/panel";
 import {
-  CompactPropertyRow,
   InspectorBody,
   InspectorHeader,
   inspectorType,
@@ -217,18 +216,10 @@ function Field({
     />
   );
 
-  if (stacked || help) {
-    return (
-      <PropertyRow label={label} htmlFor={id} required={required} help={help}>
-        {control}
-      </PropertyRow>
-    );
-  }
-
   return (
-    <CompactPropertyRow label={label} htmlFor={id} required={required}>
+    <PropertyRow label={label} htmlFor={id} required={required} help={help}>
       {control}
-    </CompactPropertyRow>
+    </PropertyRow>
   );
 }
 
@@ -295,19 +286,9 @@ function ReferenceSelector({
           placeholder="Select…"
           triggerClassName="min-w-0 flex-1"
           onValueChange={onChange}
+          polished
+          emptyOption
         />
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          disabled={!value}
-          aria-label={`Clear ${label}`}
-          title={`Clear ${label}`}
-          onClick={() => onChange("")}
-          className="size-[var(--control-height-md)]"
-        >
-          <MSym name="close" size={16} />
-        </Button>
         {showRefresh && (
           <Button
             type="button"

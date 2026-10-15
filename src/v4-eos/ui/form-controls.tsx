@@ -20,8 +20,9 @@ import { cn } from "@/v4-eos/ui/lib/utils";
 // Iceberg density: 28px controls, restrained radius, subtle dark input fills.
 
 // Inspector fields: Eos standard control height (36px) with body-sized values.
+// Same outlined white surface as the polished select (Figma SV_Playground).
 const FIELD =
-  "h-[var(--control-height-md)] rounded-[var(--radius-field)] bg-[var(--color-bg-subtle)] text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] focus-visible:bg-[var(--color-bg-surface)]";
+  "h-[var(--control-height-md)] rounded-[var(--radius-field)] border border-[var(--color-border-strong)] bg-[var(--color-bg-elevated)] px-3 text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] shadow-none focus-visible:bg-[var(--color-bg-elevated)]";
 
 export function TextField(
   props: React.ComponentProps<typeof Input> & { invalid?: boolean },
@@ -50,7 +51,7 @@ export function TextAreaField(
       {...rest}
       aria-invalid={invalid || undefined}
       className={cn(
-        "min-h-16 rounded-[var(--radius-field)] bg-[var(--color-bg-subtle)] text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] focus-visible:bg-[var(--color-bg-surface)]",
+        "min-h-16 rounded-[var(--radius-field)] border border-[var(--color-border-strong)] bg-[var(--color-bg-elevated)] px-3 py-2.5 text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] shadow-none focus-visible:bg-[var(--color-bg-elevated)]",
         className,
       )}
     />
@@ -101,6 +102,15 @@ const normalizeOption = (o: SelectFieldOption) =>
 // The single app dropdown (light shadcn/Radix Select). Used by the Properties
 // panel AND the preview toolbar so every dropdown looks and behaves the same.
 // Accepts plain strings (label === value) or { label, value } pairs.
+// Radix SelectItem cannot take "" as a value, so the empty first option uses a
+// sentinel that is translated back to "" on change.
+const EMPTY_OPTION_VALUE = "__empty__";
+
+// Polished select (Figma SV_Playground "Select"): white surface, 1px outline,
+// 36px control, 12px horizontal padding, dark disclosure chevron.
+const POLISHED_FIELD =
+  "rounded-[var(--radius-field)] border border-[var(--color-border-strong)] bg-[var(--color-bg-elevated)] px-3 text-[color:var(--color-text-primary)] shadow-none focus-visible:bg-[var(--color-bg-elevated)] [&>span:last-child]:opacity-100 [&>span:last-child]:text-[var(--color-text-primary)]";
+
 export function SelectField({
   id,
   value,
@@ -109,6 +119,8 @@ export function SelectField({
   invalid,
   placeholder = "Select…",
   triggerClassName,
+  polished = false,
+  emptyOption = false,
   "aria-label": ariaLabel,
 }: {
   id?: string;
@@ -118,14 +130,24 @@ export function SelectField({
   invalid?: boolean;
   placeholder?: string;
   triggerClassName?: string;
+  // Figma "Select" look (see POLISHED_FIELD).
+  polished?: boolean;
+  // Adds a blank first row that clears the value (value "").
+  emptyOption?: boolean;
   "aria-label"?: string;
 }) {
-  const match = options.map(normalizeOption).find((o) => o.value === value);
+  const normalized = options.map(normalizeOption);
+  const match = normalized.find((o) => o.value === value);
   const triggerTitle =
     match && match.label !== placeholder ? match.label : value || undefined;
 
   return (
-    <ShadSelect value={value} onValueChange={onValueChange}>
+    <ShadSelect
+      value={value}
+      onValueChange={(v) =>
+        onValueChange?.(v === EMPTY_OPTION_VALUE ? "" : v)
+      }
+    >
       <SelectTrigger
         id={id}
         size="sm"
@@ -134,6 +156,7 @@ export function SelectField({
         aria-label={ariaLabel}
         className={cn(
           FIELD,
+          polished && POLISHED_FIELD,
           "data-[size=sm]:h-[var(--control-height-md)] w-full min-w-0 max-w-full [&_[data-slot=select-value]]:min-w-0 [&_[data-slot=select-value]]:truncate",
           triggerClassName,
         )}
@@ -141,8 +164,15 @@ export function SelectField({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {options.map((raw) => {
-          const opt = normalizeOption(raw);
+        {emptyOption && (
+          <SelectItem
+            value={EMPTY_OPTION_VALUE}
+            className="text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)]"
+          >
+            &nbsp;
+          </SelectItem>
+        )}
+        {normalized.map((opt) => {
           return (
             <SelectItem
               key={opt.value}
