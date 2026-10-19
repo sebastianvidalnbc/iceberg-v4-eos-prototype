@@ -129,7 +129,7 @@ function ActionCard({ icon, label, hint, onClick, disabled }: Action) {
         <span className="block text-[length:var(--type-title-sm-size)] leading-[length:var(--type-title-sm-lh)] font-semibold text-[var(--color-text-primary)]">
           {label}
         </span>
-        <span className="block truncate text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] text-[var(--color-text-secondary)]">
+        <span className="block text-[length:var(--type-body-sm-size)] leading-[length:var(--type-body-sm-lh)] text-[var(--color-text-secondary)]">
           {hint}
         </span>
       </span>
@@ -262,13 +262,13 @@ function ModuleUsage() {
 export function HomeView() {
   return (
     <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--color-bg-app)] text-[var(--color-text-primary)]">
-      <div className="mx-auto flex w-full max-w-[1160px] flex-col gap-6 px-6 py-6">
-        {/* Hero header */}
-        <header className="flex flex-wrap items-end justify-between gap-4">
+      {/* Same inset and title position as the list views (--grid-margin). */}
+      <div className="flex w-full flex-col gap-[var(--grid-stack)] p-[var(--grid-margin)]">
+        {/* Hero header — title, then context line; no kicker above the title. */}
+        <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
-            <span className={EYEBROW}>Iceberg · Commerce CMS</span>
-            {/* Eos §1.11 "Detail H1" -> Headline Small (24/32). */}
-            <h1 className="mt-1 text-[length:var(--type-headline-lg-size)] font-bold leading-[length:var(--type-headline-lg-lh)] tracking-[-0.01em] text-[var(--color-text-primary)]">
+            {/* Same title role as the list views (Headline Small 24/32). */}
+            <h1 className="text-[length:var(--type-headline-sm-size)] font-bold leading-[length:var(--type-headline-sm-lh)] tracking-[-0.01em] text-[var(--color-text-primary)]">
               Dashboard
             </h1>
             <p className="mt-1 text-[length:var(--type-body-md-size)] leading-[length:var(--type-body-md-lh)] text-[var(--color-text-secondary)]">
@@ -293,20 +293,22 @@ export function HomeView() {
         {/* Quick access */}
         <section aria-label="Quick access" className="flex flex-col gap-3">
           <span className={EYEBROW}>Quick access</span>
-          <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]">
+          {/* One track per tile: five tiles fill five equal columns on wide screens. */}
+          <div className="grid grid-cols-1 gap-[var(--grid-gutter)] sm:grid-cols-2 lg:grid-cols-5">
             {ACTIONS.map((a) => (
-              <ActionCard key={a.label} {...a} />
+              <div key={a.label} className="[&>button]:h-full [&>button]:w-full">
+                <ActionCard {...a} />
+              </div>
             ))}
           </div>
         </section>
 
-        {/* KPI grid */}
-        <section
-          aria-label="Operational metrics"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        {/* KPI grid: three metric cards per row (4 columns each) on wide screens. */}
+        <section aria-label="Operational metrics" className="grid grid-cols-12 gap-[var(--grid-gutter)]">
           {STATS.map((s) => (
-            <StatCard key={s.label} {...s} />
+            <div key={s.label} className="col-span-12 sm:col-span-6 lg:col-span-4">
+              <StatCard {...s} />
+            </div>
           ))}
         </section>
 

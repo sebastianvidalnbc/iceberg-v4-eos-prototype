@@ -111,6 +111,15 @@
   --space-6: 24px;
   --space-8: 32px;
   --space-10: 40px;  /* Eos --space-10 — empty states */
+  /* Layout grid — the contract every top-level view follows (see Home, lists):
+     a 24px inset from the rail, a 16px gutter between columns and tiles, and 24px
+     between major blocks. Column tracks are 12 wide (Tailwind grid-cols-12). */
+  --grid-margin: var(--space-6);
+  --grid-gutter: var(--space-4);
+  --grid-stack: var(--space-6);
+  /* One header band height for every region header in the editor (Explorer
+     panes, Live Preview toolbar) so their rules line up across the three columns. */
+  --region-band-h: 56px;
   /* Control sizing — Eos §2.4: 36 standard / 32 compact / 40 optional-large.
      Token names are retained from the existing V4 architecture (not renamed
      to Eos's --btn-height / --control-h names) to avoid a call-site rewrite;
