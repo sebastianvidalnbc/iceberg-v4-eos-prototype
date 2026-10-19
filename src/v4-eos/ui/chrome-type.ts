@@ -27,7 +27,7 @@ export const chromeType = {
 
 export function chromePanelHeaderClass(className?: string) {
   return cn(
-    "flex shrink-0 items-center justify-between gap-2 border-b border-[var(--color-border-subtle)] px-3 py-2.5",
+    "flex h-[var(--region-band-h)] shrink-0 items-center justify-between gap-2 border-b border-[var(--color-border-subtle)] px-3",
     className,
   );
 }
